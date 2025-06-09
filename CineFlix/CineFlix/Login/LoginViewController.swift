@@ -1,5 +1,5 @@
 //
-//  ChooseSignIn.swift
+//  LoginViewController.swift
 //  CineFlix
 //
 //  Created by Arthur Lima on 09/06/2025.
@@ -7,12 +7,12 @@
 
 import UIKit
 
-class ChooseSignInViewController: UIViewController {
+class LoginViewController: UIViewController {
     
-    var screen: ChooseSignInScreen?
+    var screen: LoginScreen?
     
     override func loadView() {
-        screen = ChooseSignInScreen()
+        screen = LoginScreen()
         view = screen
     }
     
@@ -25,13 +25,17 @@ class ChooseSignInViewController: UIViewController {
         screen?.delegate = self
     }
 }
-
-extension ChooseSignInViewController: ChooseSignInScreenProtocol {
-    func tappedLoginButton() {
-        navigationController?.pushViewController(LoginViewController(), animated: true)    }
-    
-    func tappedRegisterButton() {
-        navigationController?.pushViewController(RegisterViewController(), animated: true)
+extension LoginViewController: LoginScreenProtocol {
+    func tappedforgotPasswordButton() {
+        print(#function)
     }
+    func tappedConfirmButton() {
+        print(#function)
+    }
+    func tappedRegisterNowButton() {
+        navigationController?.pushViewController(RegisterViewController(), animated: true)
+
+    }
+    
 }
 

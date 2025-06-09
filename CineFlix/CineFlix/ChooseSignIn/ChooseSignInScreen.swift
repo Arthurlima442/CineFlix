@@ -39,7 +39,7 @@ class ChooseSignInScreen: UIView {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Login", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 19)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .red
         button.clipsToBounds = true
@@ -52,7 +52,7 @@ class ChooseSignInScreen: UIView {
         let register = UIButton()
         register.translatesAutoresizingMaskIntoConstraints = false
         register.setTitle("Cadastre-se", for: .normal)
-        register.titleLabel?.font = UIFont.systemFont(ofSize: 19)
+        register.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         register.setTitleColor(.white, for: .normal)
         register.addTarget(self, action: #selector(tappedRegisterButton), for: .touchUpInside)
         register.backgroundColor = .red

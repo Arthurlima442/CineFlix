@@ -1,5 +1,5 @@
 //
-//  RegisterScreen.swift
+//  LoginScreen.swift
 //  CineFlix
 //
 //  Created by Arthur Lima on 09/06/2025.
@@ -7,18 +7,20 @@
 
 import UIKit
 
-protocol RegisterScreenProtocol: AnyObject {
+protocol LoginScreenProtocol: AnyObject {
+    func tappedforgotPasswordButton()
     func tappedConfirmButton()
+    func tappedRegisterNowButton()
 }
 
-class RegisterScreen: UIView {
+class LoginScreen: UIView {
     
-    weak var delegate: RegisterScreenProtocol?
+    weak var delegate: LoginScreenProtocol?
     
     lazy var titleLabel: UILabel = {
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
-        title.text = "Cadastro"
+        title.text = "Login"
         title.font = UIFont.boldSystemFont(ofSize: 30)
         title.textColor = .white
         title.textAlignment = .center
@@ -33,15 +35,6 @@ class RegisterScreen: UIView {
         text.textColor = .red
         text.textAlignment = .center
         return text
-    }()
-    
-    lazy var nameTextFiel: UITextField = {
-        var name = UITextField()
-        name.translatesAutoresizingMaskIntoConstraints = false
-        name.placeholder = "Enter your Name:"
-        name.textColor = .black
-        name.borderStyle = .roundedRect
-        return name
     }()
     
     lazy var emailTextFiel: UITextField = {
@@ -63,32 +56,51 @@ class RegisterScreen: UIView {
         return password
     }()
     
-    lazy var confirmPasswordTextField: UITextField = {
-        let confirm = UITextField()
-        confirm.translatesAutoresizingMaskIntoConstraints = false
-        confirm.placeholder = "Confirm your Password:"
-        confirm.borderStyle = .roundedRect
-        confirm.keyboardType = .emailAddress
-        confirm.isSecureTextEntry = true
-        return confirm
+    lazy var forgotPasswordButton: UIButton = {
+        let forgot = UIButton()
+        forgot.translatesAutoresizingMaskIntoConstraints = false
+        forgot.setTitle("Forgot my Password?", for: .normal)
+        forgot.setTitleColor(.white, for: .normal)
+        forgot.backgroundColor = .black
+        forgot.addTarget(self, action: #selector(tappedforgotPasswordButton), for: .touchUpInside)
+        return forgot
     }()
     
     lazy var confirmButton: UIButton = {
         let confirm = UIButton()
         confirm.translatesAutoresizingMaskIntoConstraints = false
-        confirm.setTitle("Confirm", for: .normal)
+        confirm.setTitle("Confirmar", for: .normal)
         confirm.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        confirm.backgroundColor = .red
-        confirm.clipsToBounds = true
-        confirm.layer.cornerRadius = 8
-        confirm.addTarget(self, action: #selector(tappedConfirmButton), for: .touchUpInside)
         confirm.setTitleColor(.white, for: .normal)
+        confirm.backgroundColor = .red
+        confirm.addTarget(self, action: #selector(tappedConfirmButton), for: .touchUpInside)
+        confirm.layer.cornerRadius = 8
         return confirm
     }()
+     
+    lazy var registerNowButton: UIButton = {
+        let now = UIButton()
+        now.setTitle("Don't have an account? Register", for: .normal)
+        now.translatesAutoresizingMaskIntoConstraints = false
+        now.setTitleColor(.white, for: .normal)
+        now .backgroundColor = .black
+        now.addTarget(self, action: #selector(tappedRegisterNowButton), for: .touchUpInside)
+        return now
+    }()
+    
+    @objc func tappedRegisterNowButton() {
+        delegate?.tappedRegisterNowButton()
+    }
+    
     
     @objc func tappedConfirmButton() {
         delegate?.tappedConfirmButton()
     }
+    
+    @objc func tappedforgotPasswordButton() {
+        delegate?.tappedforgotPasswordButton()
+    }
+    
     
     init() {
         super.init(frame: .zero)
@@ -97,18 +109,18 @@ class RegisterScreen: UIView {
         configConstraints()
     }
     
-    required init? (coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     func addElements() {
-        addSubview(titleLabel)
         addSubview(textLabel)
-        addSubview(nameTextFiel)
+        addSubview(titleLabel)
         addSubview(emailTextFiel)
         addSubview(passwordTextField)
-        addSubview(confirmPasswordTextField)
+        addSubview(forgotPasswordButton)
         addSubview(confirmButton)
+        addSubview(registerNowButton)
     }
     
     func configConstraints() {
@@ -121,30 +133,38 @@ class RegisterScreen: UIView {
             textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
-            emailTextFiel.topAnchor.constraint(equalTo: nameTextFiel.bottomAnchor, constant: 20),
+            emailTextFiel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 20),
             emailTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             emailTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             emailTextFiel.heightAnchor.constraint(equalToConstant: 40),
-            
-            nameTextFiel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 20),
-            nameTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            nameTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            nameTextFiel.heightAnchor.constraint(equalToConstant: 40),
             
             passwordTextField.topAnchor.constraint(equalTo: emailTextFiel.bottomAnchor, constant: 20),
             passwordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             passwordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             passwordTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            confirmPasswordTextField.topAnchor.constraint(equalTo:passwordTextField.bottomAnchor, constant: 20),
-            confirmPasswordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            confirmPasswordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            confirmPasswordTextField.heightAnchor.constraint(equalToConstant: 40),
+            forgotPasswordButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 10),
+            forgotPasswordButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            forgotPasswordButton.heightAnchor.constraint(equalToConstant: 20),
             
-            confirmButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -90),
-            confirmButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            confirmButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            confirmButton.topAnchor.constraint(equalTo: forgotPasswordButton.bottomAnchor, constant: 50),
+            confirmButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            confirmButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             confirmButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            registerNowButton.topAnchor.constraint(equalTo: confirmButton.bottomAnchor, constant: 10),
+            registerNowButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            registerNowButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            registerNowButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            
+            
+            
+            
+            
         ])
     }
+    
+    
+    
 }
