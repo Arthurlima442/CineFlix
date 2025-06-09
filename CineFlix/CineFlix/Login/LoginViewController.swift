@@ -30,7 +30,7 @@ extension LoginViewController: LoginScreenProtocol {
         print(#function)
     }
     func tappedConfirmButton() {
-        print(#function)
+        navigationController?.pushViewController(HomeViewController(), animated: true)
     }
     func tappedRegisterNowButton() {
         navigationController?.pushViewController(RegisterViewController(), animated: true)
