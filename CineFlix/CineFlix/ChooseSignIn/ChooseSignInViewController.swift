@@ -32,7 +32,7 @@ extension ChooseSignInViewController: ChooseSignInScreenProtocol {
     }
     
     func tappedRegisterButton() {
-        print(#function)
+        navigationController?.pushViewController(RegisterViewController(), animated: true)
     }
 }
 
