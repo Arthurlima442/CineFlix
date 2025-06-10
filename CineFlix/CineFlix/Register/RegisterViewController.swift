@@ -28,6 +28,6 @@ class RegisterViewController: UIViewController {
 
 extension RegisterViewController: RegisterScreenProtocol {
     func tappedConfirmButton() {
-        print(#function)
+        navigationController?.pushViewController(SettingsViewController(), animated: true)
     }
 }

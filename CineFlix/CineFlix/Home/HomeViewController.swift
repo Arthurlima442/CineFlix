@@ -8,7 +8,7 @@
 import UIKit
 
 class HomeViewController: UIViewController {
-
+    
     var screen: HomeScreen?
     
     override func loadView() {
@@ -26,5 +26,4 @@ class HomeViewController: UIViewController {
     }
 }
 extension HomeViewController: HomeScreenProtocol {
-    
 }

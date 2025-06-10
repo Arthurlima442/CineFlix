@@ -8,11 +8,10 @@
 import UIKit
 
 protocol HomeScreenProtocol: AnyObject {
-    
 }
 
 class HomeScreen: UIView, UITextFieldDelegate {
-
+    
     weak var delegate: HomeScreenProtocol?
     
     lazy var textLabel: UILabel = {
@@ -35,7 +34,6 @@ class HomeScreen: UIView, UITextFieldDelegate {
         search.layer.borderWidth = 1
         search.backgroundColor = .black
         search.textColor = .white
-
         // Placeholder branco
         search.attributedPlaceholder = NSAttributedString(
             string: "search movie:",
@@ -44,14 +42,11 @@ class HomeScreen: UIView, UITextFieldDelegate {
         return search
     }()
     
-    
-    
     init() {
         super.init(frame: .zero)
         backgroundColor = .black
         addElements()
         configConstraints()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -74,9 +69,6 @@ class HomeScreen: UIView, UITextFieldDelegate {
             searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             searchTextField.heightAnchor.constraint(equalToConstant: 40),
-            
         ])
     }
-    
-
 }

@@ -15,16 +15,6 @@ class RegisterScreen: UIView {
     
     weak var delegate: RegisterScreenProtocol?
     
-    lazy var titleLabel: UILabel = {
-        let title = UILabel()
-        title.translatesAutoresizingMaskIntoConstraints = false
-        title.text = "Cadastro"
-        title.font = UIFont.boldSystemFont(ofSize: 30)
-        title.textColor = .white
-        title.textAlignment = .center
-        return title
-    }()
-    
     lazy var textLabel: UILabel = {
         let text = UILabel()
         text.translatesAutoresizingMaskIntoConstraints = false
@@ -35,41 +25,91 @@ class RegisterScreen: UIView {
         return text
     }()
     
+    lazy var titleLabel: UILabel = {
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.text = "Register"
+        title.font = UIFont.boldSystemFont(ofSize: 25)
+        title.textColor = .white
+        title.textAlignment = .left
+        return title
+    }()
+    
     lazy var nameTextFiel: UITextField = {
         var name = UITextField()
         name.translatesAutoresizingMaskIntoConstraints = false
-        name.placeholder = "Enter your Name:"
-        name.textColor = .black
         name.borderStyle = .roundedRect
+        name.clipsToBounds = true
+        name.layer.cornerRadius = 4
+        name.layer.borderColor = UIColor.white.cgColor
+        name.layer.borderWidth = 1
+        name.backgroundColor = .black
+        name.textColor = .white
+        name.keyboardType = .emailAddress
+        // Placeholder branco
+        name.attributedPlaceholder = NSAttributedString(
+            string: "Enter your Name:",
+            attributes: [.foregroundColor: UIColor.lightGray]
+        )
         return name
     }()
     
     lazy var emailTextFiel: UITextField = {
         let email = UITextField()
         email.translatesAutoresizingMaskIntoConstraints = false
-        email.placeholder = "Enter your Email:"
         email.borderStyle = .roundedRect
+        email.clipsToBounds = true
+        email.layer.cornerRadius = 4
+        email.layer.borderColor = UIColor.white.cgColor
+        email.layer.borderWidth = 1
+        email.backgroundColor = .black
+        email.textColor = .white
         email.keyboardType = .emailAddress
+        // Placeholder branco
+        email.attributedPlaceholder = NSAttributedString(
+            string: "Enter your Email:",
+            attributes: [.foregroundColor: UIColor.lightGray]
+        )
         return email
     }()
     
     lazy var passwordTextField: UITextField = {
         let password = UITextField()
         password.translatesAutoresizingMaskIntoConstraints = false
-        password.placeholder = "Enter your Password:"
         password.borderStyle = .roundedRect
+        password.clipsToBounds = true
+        password.layer.cornerRadius = 4
+        password.layer.borderColor = UIColor.white.cgColor
+        password.layer.borderWidth = 1
+        password.backgroundColor = .black
+        password.textColor = .white
         password.keyboardType = .emailAddress
         password.isSecureTextEntry = true
+        // Placeholder branco
+        password.attributedPlaceholder = NSAttributedString(
+            string: "Enter your Password:",
+            attributes: [.foregroundColor: UIColor.lightGray]
+        )
         return password
     }()
     
     lazy var confirmPasswordTextField: UITextField = {
         let confirm = UITextField()
         confirm.translatesAutoresizingMaskIntoConstraints = false
-        confirm.placeholder = "Confirm your Password:"
         confirm.borderStyle = .roundedRect
+        confirm.clipsToBounds = true
+        confirm.layer.cornerRadius = 4
+        confirm.layer.borderColor = UIColor.white.cgColor
+        confirm.layer.borderWidth = 1
+        confirm.backgroundColor = .black
+        confirm.textColor = .white
         confirm.keyboardType = .emailAddress
         confirm.isSecureTextEntry = true
+        // Placeholder branco
+        confirm.attributedPlaceholder = NSAttributedString(
+            string: "Confirm your Password:",
+            attributes: [.foregroundColor: UIColor.lightGray]
+        )
         return confirm
     }()
     
@@ -113,23 +153,23 @@ class RegisterScreen: UIView {
     
     func configConstraints() {
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            textLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
+            textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
-            textLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            titleLabel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 30),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            
+            nameTextFiel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            nameTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            nameTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            nameTextFiel.heightAnchor.constraint(equalToConstant: 40),
             
             emailTextFiel.topAnchor.constraint(equalTo: nameTextFiel.bottomAnchor, constant: 20),
             emailTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             emailTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             emailTextFiel.heightAnchor.constraint(equalToConstant: 40),
-            
-            nameTextFiel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 20),
-            nameTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            nameTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            nameTextFiel.heightAnchor.constraint(equalToConstant: 40),
             
             passwordTextField.topAnchor.constraint(equalTo: emailTextFiel.bottomAnchor, constant: 20),
             passwordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),

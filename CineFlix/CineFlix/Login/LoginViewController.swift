@@ -25,17 +25,18 @@ class LoginViewController: UIViewController {
         screen?.delegate = self
     }
 }
+
 extension LoginViewController: LoginScreenProtocol {
     func tappedforgotPasswordButton() {
         print(#function)
     }
+    
     func tappedConfirmButton() {
         navigationController?.pushViewController(HomeViewController(), animated: true)
     }
+    
     func tappedRegisterNowButton() {
         navigationController?.pushViewController(RegisterViewController(), animated: true)
-
     }
-    
 }
 

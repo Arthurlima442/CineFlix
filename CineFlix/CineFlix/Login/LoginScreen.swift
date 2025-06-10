@@ -17,16 +17,6 @@ class LoginScreen: UIView {
     
     weak var delegate: LoginScreenProtocol?
     
-    lazy var titleLabel: UILabel = {
-        let title = UILabel()
-        title.translatesAutoresizingMaskIntoConstraints = false
-        title.text = "Login"
-        title.font = UIFont.boldSystemFont(ofSize: 30)
-        title.textColor = .white
-        title.textAlignment = .center
-        return title
-    }()
-    
     lazy var textLabel: UILabel = {
         let text = UILabel()
         text.translatesAutoresizingMaskIntoConstraints = false
@@ -37,22 +27,51 @@ class LoginScreen: UIView {
         return text
     }()
     
+    lazy var titleLabel: UILabel = {
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.text = "Login"
+        title.font = UIFont.boldSystemFont(ofSize: 25)
+        title.textColor = .white
+        title.textAlignment = .left
+        return title
+    }()
+    
     lazy var emailTextFiel: UITextField = {
         let email = UITextField()
         email.translatesAutoresizingMaskIntoConstraints = false
-        email.placeholder = "Enter your Email:"
         email.borderStyle = .roundedRect
-        email.keyboardType = .emailAddress
+        email.clipsToBounds = true
+        email.layer.cornerRadius = 4
+        email.layer.borderColor = UIColor.white.cgColor
+        email.layer.borderWidth = 1
+        email.backgroundColor = .black
+        email.textColor = .white
+        // Placeholder branco
+        email.attributedPlaceholder = NSAttributedString(
+            string: "Enter your Email:",
+            attributes: [.foregroundColor: UIColor.lightGray]
+        )
         return email
     }()
     
     lazy var passwordTextField: UITextField = {
         let password = UITextField()
         password.translatesAutoresizingMaskIntoConstraints = false
-        password.placeholder = "Enter your Password:"
         password.borderStyle = .roundedRect
+        password.clipsToBounds = true
+        password.layer.cornerRadius = 4
+        password.layer.borderColor = UIColor.white.cgColor
+        password.layer.borderWidth = 1
+        password.backgroundColor = .black
+        password.textColor = .white
         password.keyboardType = .emailAddress
         password.isSecureTextEntry = true
+        // Placeholder branco
+        password.attributedPlaceholder = NSAttributedString(
+            string: "Enter your Password:",
+            attributes: [.foregroundColor: UIColor.lightGray]
+        )
         return password
     }()
     
@@ -69,7 +88,7 @@ class LoginScreen: UIView {
     lazy var confirmButton: UIButton = {
         let confirm = UIButton()
         confirm.translatesAutoresizingMaskIntoConstraints = false
-        confirm.setTitle("Confirmar", for: .normal)
+        confirm.setTitle("Confirm", for: .normal)
         confirm.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         confirm.setTitleColor(.white, for: .normal)
         confirm.backgroundColor = .red
@@ -77,7 +96,7 @@ class LoginScreen: UIView {
         confirm.layer.cornerRadius = 8
         return confirm
     }()
-     
+    
     lazy var registerNowButton: UIButton = {
         let now = UIButton()
         now.setTitle("Don't have an account? Register", for: .normal)
@@ -92,7 +111,6 @@ class LoginScreen: UIView {
         delegate?.tappedRegisterNowButton()
     }
     
-    
     @objc func tappedConfirmButton() {
         delegate?.tappedConfirmButton()
     }
@@ -100,7 +118,6 @@ class LoginScreen: UIView {
     @objc func tappedforgotPasswordButton() {
         delegate?.tappedforgotPasswordButton()
     }
-    
     
     init() {
         super.init(frame: .zero)
@@ -125,15 +142,15 @@ class LoginScreen: UIView {
     
     func configConstraints() {
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            textLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
+            textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
-            textLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            titleLabel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 30),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
-            emailTextFiel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 20),
+            emailTextFiel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             emailTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             emailTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             emailTextFiel.heightAnchor.constraint(equalToConstant: 40),
@@ -156,15 +173,6 @@ class LoginScreen: UIView {
             registerNowButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             registerNowButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             registerNowButton.heightAnchor.constraint(equalToConstant: 40),
-            
-            
-            
-            
-            
-            
         ])
     }
-    
-    
-    
 }

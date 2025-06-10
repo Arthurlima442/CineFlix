@@ -28,7 +28,7 @@ class ChooseSignInScreen: UIView {
     lazy var messageLabel: UILabel = {
         let message = UILabel()
         message.translatesAutoresizingMaskIntoConstraints = false
-        message.text = "Descubra o filme perfeito."
+        message.text = "Discover the perfect movie."
         message.font = UIFont.systemFont(ofSize: 25)
         message.textAlignment = .center
         message.textColor = .white
@@ -51,7 +51,7 @@ class ChooseSignInScreen: UIView {
     lazy var registerButton: UIButton = {
         let register = UIButton()
         register.translatesAutoresizingMaskIntoConstraints = false
-        register.setTitle("Cadastre-se", for: .normal)
+        register.setTitle("Register", for: .normal)
         register.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         register.setTitleColor(.white, for: .normal)
         register.addTarget(self, action: #selector(tappedRegisterButton), for: .touchUpInside)
