@@ -15,7 +15,8 @@ class MovieDetailScreen: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         // TO DO: REGISTER
         tableView.register(MovieImageTableViewCell.self, forCellReuseIdentifier: MovieImageTableViewCell.identifier)
-        tableView.backgroundColor = .white
+        tableView.register(MovieInformationTableViewCell.self, forCellReuseIdentifier: MovieInformationTableViewCell.identifier)
+        tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         return tableView
     }()

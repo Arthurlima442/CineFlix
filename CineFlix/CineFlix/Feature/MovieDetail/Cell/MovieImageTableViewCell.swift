@@ -14,8 +14,8 @@ class MovieImageTableViewCell: UITableViewCell {
     lazy var coverMovieImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "coverSuperman")
-        imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(named: "coverPredador")
+        imageView.contentMode = .scaleToFill
         return imageView
     }()
     
@@ -41,7 +41,7 @@ class MovieImageTableViewCell: UITableViewCell {
             coverMovieImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             coverMovieImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             coverMovieImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            coverMovieImageView.heightAnchor.constraint(equalToConstant: 100)
+            coverMovieImageView.heightAnchor.constraint(equalToConstant: 300)
         ])
     }
 }
