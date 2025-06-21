@@ -37,7 +37,7 @@ class LoginScreen: UIView {
         return title
     }()
     
-    lazy var emailTextFiel: UITextField = {
+    lazy var emailTextField: UITextField = {
         let email = UITextField()
         email.translatesAutoresizingMaskIntoConstraints = false
         email.borderStyle = .roundedRect
@@ -133,7 +133,7 @@ class LoginScreen: UIView {
     func addElements() {
         addSubview(textLabel)
         addSubview(titleLabel)
-        addSubview(emailTextFiel)
+        addSubview(emailTextField)
         addSubview(passwordTextField)
         addSubview(forgotPasswordButton)
         addSubview(confirmButton)
@@ -150,12 +150,12 @@ class LoginScreen: UIView {
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
-            emailTextFiel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            emailTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            emailTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            emailTextFiel.heightAnchor.constraint(equalToConstant: 40),
+            emailTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            emailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            emailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            emailTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            passwordTextField.topAnchor.constraint(equalTo: emailTextFiel.bottomAnchor, constant: 20),
+            passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
             passwordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             passwordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             passwordTextField.heightAnchor.constraint(equalToConstant: 40),
