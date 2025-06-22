@@ -55,7 +55,7 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 25, weight: .bold)
-        label.text = "duration:"
+        label.text = "Duration:"
         label.textAlignment = .left
         label.textColor = .white
         return label
@@ -131,19 +131,19 @@ class MovieInformationTableViewCell: UITableViewCell {
             launchLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
             dateLaunchLabel.topAnchor.constraint(equalTo: launchLabel.bottomAnchor, constant: 5),
-            dateLaunchLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            dateLaunchLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             
             duratioLabel.topAnchor.constraint(equalTo: dateLaunchLabel.bottomAnchor, constant: 20),
             duratioLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
             duratioMovieLabel.topAnchor.constraint(equalTo: duratioLabel.bottomAnchor, constant: 5),
-            duratioMovieLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            duratioMovieLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             
             synopsisLabel.topAnchor.constraint(equalTo: duratioMovieLabel.bottomAnchor, constant: 20),
             synopsisLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
             synopsisMovieLabel.topAnchor.constraint(equalTo: synopsisLabel.bottomAnchor, constant: 5),
-            synopsisMovieLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            synopsisMovieLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             synopsisMovieLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             synopsisMovieLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
