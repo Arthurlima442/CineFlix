@@ -32,6 +32,5 @@ extension SettingsViewController: SettingsScreenProtocol {
     }
     
     func tappedExitAppButton() {
-        print(#function)
-    }
+        navigationController?.pushViewController(ChooseSignInViewController(), animated: true)    }
 }

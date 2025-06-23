@@ -7,12 +7,7 @@
 
 import UIKit
 
-protocol HomeScreenProtocol: AnyObject {
-}
-
-class HomeScreen: UIView, UITextFieldDelegate {
-    
-    weak var delegate: HomeScreenProtocol?
+class HomeMovieScreen: UIView {
     
     lazy var cineFlixLabel: UILabel = {
         let text = UILabel()
@@ -45,8 +40,10 @@ class HomeScreen: UIView, UITextFieldDelegate {
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: HomeTableViewCell.identifier)
-        tableView.backgroundColor = .red
+        tableView.register(MovieCarouselTableViewCell
+.self, forCellReuseIdentifier: MovieCarouselTableViewCell
+.identifier)
+        tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         return tableView
     }()

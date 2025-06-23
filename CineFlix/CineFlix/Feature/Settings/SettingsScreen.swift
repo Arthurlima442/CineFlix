@@ -183,7 +183,7 @@ class SettingsScreen: UIView {
     
     func configConstraints() {
         NSLayoutConstraint.activate([
-            textLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
+            textLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             textLabel.leadingAnchor.constraint(equalTo: leadingAnchor , constant: 20),
             textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             textLabel.heightAnchor.constraint(equalToConstant: 40),

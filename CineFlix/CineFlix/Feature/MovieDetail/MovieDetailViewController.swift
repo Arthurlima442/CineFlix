@@ -50,6 +50,6 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
 
 extension MovieDetailViewController: MovieImageTableViewCellProtocol {
     func tappedBackButton() {
-        print(#function)
+        navigationController?.popViewController(animated: true)
     }
 }
