@@ -18,7 +18,6 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configScreen()
         configTableView()
         
     }
