@@ -115,10 +115,3 @@ class HomeMovieScreen: UIView {
         ])
     }
 }
-
-//NSLayoutConstraint.activate([
-//    menuButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-//    menuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-//    menuButton.widthAnchor.constraint(equalToConstant: 120),
-//    menuButton.heightAnchor.constraint(equalToConstant: 40)
-//])
