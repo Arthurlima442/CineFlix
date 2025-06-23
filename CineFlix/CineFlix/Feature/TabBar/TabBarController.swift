@@ -15,7 +15,7 @@ class TabBarController: UITabBarController {
     
     private func setupTabBar() {
         let home = createNavController(viewController: HomeViewController(), title: "Home", imageName: "house", selectedImage: "house.fill")
-        let settings = createNavController(viewController: HomeViewController(), title: "Config", imageName: "gear", selectedImage: "gearshape.fill")
+        let settings = createNavController(viewController: SettingsViewController(), title: "Config", imageName: "gear", selectedImage: "gearshape.fill")
         
         viewControllers = [home, settings]
     }

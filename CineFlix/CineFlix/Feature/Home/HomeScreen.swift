@@ -14,7 +14,7 @@ class HomeScreen: UIView, UITextFieldDelegate {
     
     weak var delegate: HomeScreenProtocol?
     
-    lazy var textLabel: UILabel = {
+    lazy var cineFlixLabel: UILabel = {
         let text = UILabel()
         text.translatesAutoresizingMaskIntoConstraints = false
         text.text = "CineFlix"
@@ -42,6 +42,15 @@ class HomeScreen: UIView, UITextFieldDelegate {
         return search
     }()
     
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: HomeTableViewCell.identifier)
+        tableView.backgroundColor = .red
+        tableView.separatorStyle = .none
+        return tableView
+    }()
+    
     init() {
         super.init(frame: .zero)
         backgroundColor = .black
@@ -54,21 +63,32 @@ class HomeScreen: UIView, UITextFieldDelegate {
     }
     
     func addElements() {
-        addSubview(textLabel)
+        addSubview(tableView)
+        addSubview(cineFlixLabel)
         addSubview(searchTextField)
+    }
+    
+    func configTableViewProtocols(delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {
+        tableView.delegate = delegate
+        tableView.dataSource = dataSource
     }
     
     func configConstraints() {
         NSLayoutConstraint.activate([
-            textLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
-            textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            textLabel.heightAnchor.constraint(equalToConstant: 40),
+            cineFlixLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            cineFlixLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            cineFlixLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            cineFlixLabel.heightAnchor.constraint(equalToConstant: 40),
             
-            searchTextField.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 25),
+            searchTextField.topAnchor.constraint(equalTo: cineFlixLabel.bottomAnchor, constant: 25),
             searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             searchTextField.heightAnchor.constraint(equalToConstant: 40),
+            
+            tableView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
         ])
     }
 }
