@@ -14,6 +14,7 @@ class HomeViewController: UIViewController {
     override func loadView() {
         screen = HomeMovieScreen()
         view = screen
+        
     }
     
     override func viewDidLoad() {

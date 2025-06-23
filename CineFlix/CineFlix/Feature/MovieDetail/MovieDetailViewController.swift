@@ -19,6 +19,7 @@ class MovieDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configTableView()
+       navigationItem.hidesBackButton = true  // Esconder botao padrao de voltar
     }
     
     func configTableView() {

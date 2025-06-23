@@ -8,6 +8,7 @@
 import UIKit
 
 class MoviePosterCollectionViewCell: UICollectionViewCell {
+    
     static let identifier: String = String(describing: MoviePosterCollectionViewCell
         .self)
     

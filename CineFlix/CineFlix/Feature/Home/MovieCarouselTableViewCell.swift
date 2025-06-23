@@ -13,8 +13,7 @@ protocol MovieCarouselTableViewCellProtocol: AnyObject {
 
 class MovieCarouselTableViewCell: UITableViewCell {
     
-    static let identifier: String = String(describing: MovieCarouselTableViewCell
-.self)
+    static let identifier: String = String(describing: MovieCarouselTableViewCell.self)
     
     weak var delegate: MovieCarouselTableViewCellProtocol?
     
