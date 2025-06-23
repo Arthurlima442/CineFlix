@@ -14,9 +14,9 @@ class HomeViewController: UIViewController {
     var screen: HomeMovieScreen?
     
     private var sections: [MovieSection] = [
-        MovieSection(title: "Lançados recentemente:", items: ["coverSuperman", "lastofus", "mufasa"]),
-        MovieSection(title: "Também nos cinemas:", items: ["warrior", "fire", "tickets"]),
-        MovieSection(title: "Recomendados para você:", items: ["batman", "barbie", "matrix"])
+        MovieSection(title: "Lançados recentemente:", items: ["coverSuperman", "coverDragao", "coverPredador"]),
+        MovieSection(title: "Também nos cinemas:", items: ["coverF1", "carros", "coverlilo"]),
+        MovieSection(title: "Recomendados para você:", items: ["coverterraMafia", "jurrasic", "carros"])
     ]
     
     override func loadView() {
