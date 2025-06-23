@@ -32,5 +32,13 @@ extension SettingsViewController: SettingsScreenProtocol {
     }
     
     func tappedExitAppButton() {
-        navigationController?.pushViewController(ChooseSignInViewController(), animated: true)    }
+        let loginVC = ChooseSignInViewController()
+        let navController = UINavigationController(rootViewController: loginVC)
+
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+           let window = sceneDelegate.window {
+            window.rootViewController = navController
+            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromLeft, animations: nil)
+        }
+    }
 }

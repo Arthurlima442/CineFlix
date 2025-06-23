@@ -41,8 +41,8 @@ class HomeMovieScreen: UIView {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(MovieCarouselTableViewCell
-.self, forCellReuseIdentifier: MovieCarouselTableViewCell
-.identifier)
+            .self, forCellReuseIdentifier: MovieCarouselTableViewCell
+            .identifier)
         tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         return tableView

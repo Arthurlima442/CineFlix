@@ -84,8 +84,7 @@ extension MovieCarouselTableViewCell: UICollectionViewDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedItem = items[indexPath.item]
-        
+//        let selectedItem = items[indexPath.item]
         delegate?.tappedMovie()
     }
 }
