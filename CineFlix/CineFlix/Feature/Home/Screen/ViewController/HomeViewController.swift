@@ -14,7 +14,7 @@ class HomeViewController: UIViewController {
     var screen: HomeMovieScreen?
     
     private var sections: [MovieSection] = [
-        MovieSection(title: "Lançados recentemente:", items: ["coverSuperman", "coverDragao", "coverPredador"]),
+        MovieSection(title: "Lançados recentemente:", items: ["coverSuperman", "coverDragao", "coverPecadores"]),
         MovieSection(title: "Também nos cinemas:", items: ["coverF1", "carros", "coverlilo"]),
         MovieSection(title: "Recomendados para você:", items: ["coverterraMafia", "jurrasic", "carros"])
     ]
@@ -22,13 +22,23 @@ class HomeViewController: UIViewController {
     override func loadView() {
         screen = HomeMovieScreen()
         view = screen
+        screen?.clipsToBounds = true
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configTableView()
         configScreen()
+        view.backgroundColor = .black
+        
+        // ← ESSENCIAL
+        if let screen = screen {
+            screen.frame = UIScreen.main.bounds
+            screen.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            screen.backgroundColor = .black
+        }
     }
+    
     
     func configScreen() {
         screen?.delegate = self
@@ -42,7 +52,6 @@ class HomeViewController: UIViewController {
         // segunda opcao com o metodo
         screen?.configTableViewProtocols(delegate: self, dataSource: self)
     }
-
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {

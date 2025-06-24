@@ -23,7 +23,7 @@ class CategoryMenuScreen: UIView {
         category.translatesAutoresizingMaskIntoConstraints = false
         category.text = "Categorys:"
         category.textColor = .white
-        category.font = .systemFont(ofSize: 20, weight: .bold)
+        category.font = .systemFont(ofSize: 25, weight: .bold)
         category.textAlignment = .left
         return category
     }()

@@ -21,6 +21,11 @@ class ChooseSignInViewController: UIViewController {
         configScreen()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            navigationController?.setNavigationBarHidden(false, animated: false)
+        }
+    
     func configScreen() {
         screen?.delegate = self
     }

@@ -32,7 +32,7 @@ class CategoryMenuViewController: UIViewController, UITableViewDelegate, UITable
         cell.textLabel?.text = category
         cell.textLabel?.textColor = .white
         cell.backgroundColor = .clear
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         return cell
     }
 }

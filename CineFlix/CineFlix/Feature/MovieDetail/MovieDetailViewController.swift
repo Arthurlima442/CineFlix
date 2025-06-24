@@ -14,12 +14,18 @@ class MovieDetailViewController: UIViewController {
     override func loadView() {
         screen = MovieDetailScreen()
         view = screen
+        view.backgroundColor = .black
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configTableView()
-       navigationItem.hidesBackButton = true  // Esconder botao padrao de voltar
+        navigationItem.hidesBackButton = true  // Esconder botao padrao de voltar
+        view.backgroundColor = .black
+        screen?.backgroundColor = .black
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.barTintColor = .black
+        navigationController?.view.backgroundColor = .black
     }
     
     func configTableView() {

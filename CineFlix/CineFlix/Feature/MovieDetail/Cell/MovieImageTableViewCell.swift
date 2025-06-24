@@ -20,7 +20,7 @@ class MovieImageTableViewCell: UITableViewCell {
     lazy var coverMovieImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "coverPredador")
+        imageView.image = UIImage(named: "coverPecadores")
         imageView.contentMode = .scaleToFill
         return imageView
     }()

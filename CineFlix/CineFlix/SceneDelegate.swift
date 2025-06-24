@@ -13,14 +13,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         let viewController = ChooseSignInViewController()
         let nav = UINavigationController(rootViewController: viewController)
+        nav.navigationBar.isHidden = false
+        nav.navigationBar.isHidden = false
+        nav.navigationBar.isTranslucent = false
         window.rootViewController = nav
         window.makeKeyAndVisible()
         self.window = window
     }
+    
 
    // ChooseSignInViewController()
     
