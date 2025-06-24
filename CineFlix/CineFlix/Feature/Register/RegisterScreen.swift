@@ -187,7 +187,7 @@ class RegisterScreen: UIView {
             confirmPasswordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             confirmPasswordTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            confirmButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -90),
+            confirmButton.bottomAnchor.constraint(equalTo: confirmPasswordTextField.bottomAnchor, constant: 80),
             confirmButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             confirmButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             confirmButton.heightAnchor.constraint(equalToConstant: 40),

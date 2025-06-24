@@ -28,7 +28,7 @@ class LoginViewController: UIViewController {
 
 extension LoginViewController: LoginScreenProtocol {
     func tappedforgotPasswordButton() {
-        print(#function)
+        navigationController?.pushViewController(ForgetPasswordViewController(), animated: true)
     }
     
     func tappedConfirmButton() {
