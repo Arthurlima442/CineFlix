@@ -2,9 +2,8 @@
 //  LoginScreen.swift
 //  CineFlix
 //
-//  Created by Arthur Lima on 09/06/2025.
+//  Created by Arthur Lima on 06/07/2025.
 //
-
 import UIKit
 
 protocol LoginScreenProtocol: AnyObject {
