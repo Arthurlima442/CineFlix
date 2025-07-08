@@ -74,4 +74,8 @@ class MovieImageTableViewCell: UITableViewCell {
             backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
         ])
     }
+    
+    func setupCell(movie: Movie) {
+        coverMovieImageView.image = UIImage(named: movie.movieImage)
+    }
 }

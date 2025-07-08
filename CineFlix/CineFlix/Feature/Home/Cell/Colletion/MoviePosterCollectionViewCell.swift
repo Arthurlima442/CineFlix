@@ -44,8 +44,8 @@ class MoviePosterCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with imageName: String) {
-        imageView.image = UIImage(named: imageName)
+    func setupCell(with movie: Movie) {
+        imageView.image = UIImage(named: movie.movieImage)
     }
 }
 

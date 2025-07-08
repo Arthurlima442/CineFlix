@@ -8,17 +8,16 @@
 import UIKit
 
 protocol MovieCarouselTableViewCellProtocol: AnyObject {
-    func tappedMovie()
+    func tappedMovie(movie: Movie)
 }
 
 class MovieCarouselTableViewCell: UITableViewCell {
-    
     
     static let identifier: String = String(describing: MovieCarouselTableViewCell.self)
     
     weak var delegate: MovieCarouselTableViewCellProtocol?
     
-    private var items: [String] = []
+    private var movieList: [Movie] = []
     
     lazy var sectionTitleLabel: UILabel = {
         let label = UILabel()
@@ -37,6 +36,10 @@ class MovieCarouselTableViewCell: UITableViewCell {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .black// fundo preto
         collectionView.register(MoviePosterCollectionViewCell.self, forCellWithReuseIdentifier: MoviePosterCollectionViewCell.identifier)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
@@ -55,11 +58,7 @@ class MovieCarouselTableViewCell: UITableViewCell {
     func addElements() {
         contentView.addSubview(collectionView)
         contentView.addSubview(sectionTitleLabel)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        
     }
-    
-    
     
     func configConstraints() {
         NSLayoutConstraint.activate([
@@ -73,22 +72,14 @@ class MovieCarouselTableViewCell: UITableViewCell {
             collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: 190) // ajuste conforme o tamanho das imagen
         ])
-        
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.showsHorizontalScrollIndicator = false
     }
     
-    
-    func configure(movieSection: MovieSection) {
+    func setupCell(movieSection: MovieSection, delegate: MovieCarouselTableViewCellProtocol) {
+        self.delegate = delegate
         sectionTitleLabel.text = movieSection.title
-        self.items = movieSection.items
+        movieList = movieSection.movieList
         collectionView.reloadData()
     }
-//    func configure(with items: [String]) {
-//        self.items = items
-//        collectionView.reloadData()
-    
 }
 
 extension MovieCarouselTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -96,18 +87,17 @@ extension MovieCarouselTableViewCell: UICollectionViewDelegate, UICollectionView
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MoviePosterCollectionViewCell.identifier, for: indexPath) as? MoviePosterCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.configure(with: items[indexPath.item])
+        cell.setupCell(with: movieList[indexPath.row])
         return cell
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        return movieList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //        let selectedItem = items[indexPath.item]
-        delegate?.tappedMovie()
+        let movie = movieList[indexPath.row]
+        delegate?.tappedMovie(movie: movie)
     }
 }
 

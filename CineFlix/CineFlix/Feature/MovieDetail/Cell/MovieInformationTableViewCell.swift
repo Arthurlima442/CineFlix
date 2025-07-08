@@ -15,7 +15,6 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 30, weight: .bold)
-        label.text = "Pecadores"
         label.textAlignment = .center
         label.textColor = .white
         return label
@@ -25,7 +24,6 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 25, weight: .bold)
-        label.text = "16"
         label.textAlignment = .right
         label.textColor = .white
         return label
@@ -45,7 +43,6 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        label.text = "18/02/2025"
         label.textAlignment = .left
         label.textColor = .white
         return label
@@ -65,7 +62,6 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        label.text = "2 hours 34 minutes"
         label.textAlignment = .left
         label.textColor = .white
         return label
@@ -85,7 +81,6 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        label.text = "Sinners is an American horror film, released in 2025, written, co-produced and directed by Ryan Coogler. Set in 1932, in the Mississippi Delta region."
         label.textAlignment = .left
         label.numberOfLines = 0
         label.textColor = .white
@@ -147,5 +142,13 @@ class MovieInformationTableViewCell: UITableViewCell {
             synopsisMovieLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             synopsisMovieLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
+    }
+    
+    func setupCell(movie: Movie) {
+        movieNameLabel.text = movie.title
+        ageRangeLabel.text = String(movie.ageClassification)
+        dateLaunchLabel.text = movie.launch
+        duratioMovieLabel.text = movie.duration
+        synopsisMovieLabel.text = movie.synopsis
     }
 }

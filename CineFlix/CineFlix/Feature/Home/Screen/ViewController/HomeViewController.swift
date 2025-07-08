@@ -12,12 +12,7 @@ class HomeViewController: UIViewController {
     private let transitionDelegate = LeftSideTransitioningDelegate()
     
     var screen: HomeMovieScreen?
-    
-    private var sections: [MovieSection] = [
-        MovieSection(title: "Lançados recentemente:", items: ["coverSuperman", "coverDragao", "coverPecadores"]),
-        MovieSection(title: "Também nos cinemas:", items: ["coverF1", "carros", "coverlilo"]),
-        MovieSection(title: "Recomendados para você:", items: ["coverterraMafia", "jurrasic", "carros"])
-    ]
+    private var viewModel: HomeViewModel = HomeViewModel()
     
     override func loadView() {
         screen = HomeMovieScreen()
@@ -38,8 +33,7 @@ class HomeViewController: UIViewController {
             screen.backgroundColor = .black
         }
     }
-    
-    
+
     func configScreen() {
         screen?.delegate = self
     }
@@ -55,33 +49,23 @@ class HomeViewController: UIViewController {
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1 // pode ter várias seções se quiser
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections.count
-    
+        return viewModel.numberOfRowsInSection
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieCarouselTableViewCell.identifier, for: indexPath) as? MovieCarouselTableViewCell else {
             return UITableViewCell()
         }
-
-        let section = sections[indexPath.row]
-        cell.configure(movieSection: section)
-        cell.delegate = self
+        cell.setupCell(movieSection: viewModel.loudCurrentMovieSection(indexPath: indexPath), delegate: self)
         return cell
     }
-    }
-
+}
 
 extension HomeViewController: MovieCarouselTableViewCellProtocol {
-    func tappedMovie() {
-        navigationController?.pushViewController(MovieDetailViewController(), animated: true)
+    func tappedMovie(movie: Movie) {
+        navigationController?.pushViewController(MovieDetailViewController(movie: movie), animated: true)
     }
-    
 }
 extension HomeViewController: HomeMovieScreenProtocol {
     func tappedPresentCategoryMenu() {

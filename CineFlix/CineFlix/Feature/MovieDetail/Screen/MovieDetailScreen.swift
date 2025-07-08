@@ -9,7 +9,6 @@ import UIKit
 
 class MovieDetailScreen: UIView {
     
-    
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -21,17 +20,11 @@ class MovieDetailScreen: UIView {
         return tableView
     }()
     
-    func configTableViewProtocols(delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {
-        tableView.delegate = delegate
-        tableView.dataSource = dataSource
-    }
-    
     init() {
         super.init(frame: .zero)
         backgroundColor = .black
         addElements()
         configConstraints()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -50,6 +43,11 @@ class MovieDetailScreen: UIView {
             tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
         ])
+    }
+    
+    func configTableViewProtocols(delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {
+        tableView.delegate = delegate
+        tableView.dataSource = dataSource
     }
 }
 
