@@ -9,17 +9,8 @@ import UIKit
 
 class CategoryMenuScreen: UIView {
     
-    var screen: CategoryMenuScreen?
-    
-    let categories = [
-        "Kids", "Comedy", "Action", "Adventure",
-            "Science Fiction", "Horror", "Thriller",
-            "Family", "Western", "Drama",
-            "War", "Romance", "Fantasy", "Music"
-    ]
-    
     lazy var categoryLabel: UILabel = {
-       let category = UILabel()
+        let category = UILabel()
         category.translatesAutoresizingMaskIntoConstraints = false
         category.text = "Categorys:"
         category.textColor = .white
@@ -42,17 +33,28 @@ class CategoryMenuScreen: UIView {
         table.translatesAutoresizingMaskIntoConstraints = false
         table.backgroundColor = .black
         table.separatorStyle = .none
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        table.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
         return table
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .black
+        addElements()
+        configConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func addElements() {
         addSubview(tableView)
         addSubview(closeButton)
         addSubview(categoryLabel)
-        
+    }
+    
+    func configConstraints() {
         NSLayoutConstraint.activate([
             closeButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8),
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
@@ -67,8 +69,9 @@ class CategoryMenuScreen: UIView {
         ])
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func configTableViewProtocols(delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {
+        tableView.delegate = delegate
+        tableView.dataSource = dataSource
     }
 }
 

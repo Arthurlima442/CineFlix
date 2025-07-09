@@ -100,11 +100,6 @@ class HomeMovieScreen: UIView {
         addSubview(menuButton)
     }
     
-    func configTableViewProtocols(delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {
-        tableView.delegate = delegate
-        tableView.dataSource = dataSource
-    }
-    
     func configConstraints() {
         NSLayoutConstraint.activate([
             safeAreaTopBackground.topAnchor.constraint(equalTo: topAnchor),
@@ -129,5 +124,10 @@ class HomeMovieScreen: UIView {
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)        ])
+    }
+    
+    func configTableViewProtocols(delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {
+        tableView.delegate = delegate
+        tableView.dataSource = dataSource
     }
 }
