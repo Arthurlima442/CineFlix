@@ -54,7 +54,7 @@ class RegisterScreen: UIView {
         return name
     }()
     
-    lazy var emailTextFiel: UITextField = {
+    lazy var emailTextField: UITextField = {
         let email = UITextField()
         email.translatesAutoresizingMaskIntoConstraints = false
         email.borderStyle = .roundedRect
@@ -128,12 +128,6 @@ class RegisterScreen: UIView {
     
     @objc func tappedConfirmButton() {
         delegate?.tappedConfirmButton()
-        let tabBar = TabBarController()
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-           let window = sceneDelegate.window {
-            window.rootViewController = tabBar
-            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromRight, animations: nil)
-        }
     }
     
     init() {
@@ -151,7 +145,7 @@ class RegisterScreen: UIView {
         addSubview(titleLabel)
         addSubview(textLabel)
         addSubview(nameTextFiel)
-        addSubview(emailTextFiel)
+        addSubview(emailTextField)
         addSubview(passwordTextField)
         addSubview(confirmPasswordTextField)
         addSubview(confirmButton)
@@ -172,12 +166,12 @@ class RegisterScreen: UIView {
             nameTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             nameTextFiel.heightAnchor.constraint(equalToConstant: 40),
             
-            emailTextFiel.topAnchor.constraint(equalTo: nameTextFiel.bottomAnchor, constant: 20),
-            emailTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            emailTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            emailTextFiel.heightAnchor.constraint(equalToConstant: 40),
+            emailTextField.topAnchor.constraint(equalTo: nameTextFiel.bottomAnchor, constant: 20),
+            emailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            emailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            emailTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            passwordTextField.topAnchor.constraint(equalTo: emailTextFiel.bottomAnchor, constant: 20),
+            passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
             passwordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             passwordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             passwordTextField.heightAnchor.constraint(equalToConstant: 40),

@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		00A5F5322E1FB88800C1F57B /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 00A5F5312E1FB88800C1F57B /* Lottie */; };
+		00A5F5352E1FB8D100C1F57B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 00A5F5342E1FB8D100C1F57B /* FirebaseAuth */; };
+		00A5F5372E1FB8D100C1F57B /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 00A5F5362E1FB8D100C1F57B /* FirebaseCore */; };
+		00A5F5392E1FB8D100C1F57B /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 00A5F5382E1FB8D100C1F57B /* FirebaseCrashlytics */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		003F7D972DF742E900489B46 /* CineFlix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CineFlix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +43,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00A5F5322E1FB88800C1F57B /* Lottie in Frameworks */,
+				00A5F5392E1FB8D100C1F57B /* FirebaseCrashlytics in Frameworks */,
+				00A5F5372E1FB8D100C1F57B /* FirebaseCore in Frameworks */,
+				00A5F5352E1FB8D100C1F57B /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +89,10 @@
 			);
 			name = CineFlix;
 			packageProductDependencies = (
+				00A5F5312E1FB88800C1F57B /* Lottie */,
+				00A5F5342E1FB8D100C1F57B /* FirebaseAuth */,
+				00A5F5362E1FB8D100C1F57B /* FirebaseCore */,
+				00A5F5382E1FB8D100C1F57B /* FirebaseCrashlytics */,
 			);
 			productName = CineFlix;
 			productReference = 003F7D972DF742E900489B46 /* CineFlix.app */;
@@ -107,6 +122,10 @@
 			);
 			mainGroup = 003F7D8E2DF742E900489B46;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				00A5F5302E1FB88800C1F57B /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				00A5F5332E1FB8D100C1F57B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 003F7D982DF742E900489B46 /* Products */;
 			projectDirPath = "";
@@ -341,6 +360,48 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		00A5F5302E1FB88800C1F57B /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
+		00A5F5332E1FB8D100C1F57B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.15.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		00A5F5312E1FB88800C1F57B /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00A5F5302E1FB88800C1F57B /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
+		00A5F5342E1FB8D100C1F57B /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00A5F5332E1FB8D100C1F57B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		00A5F5362E1FB8D100C1F57B /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00A5F5332E1FB8D100C1F57B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		00A5F5382E1FB8D100C1F57B /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00A5F5332E1FB8D100C1F57B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 003F7D8F2DF742E900489B46 /* Project object */;
 }

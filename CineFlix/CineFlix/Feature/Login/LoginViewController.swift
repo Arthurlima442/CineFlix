@@ -8,8 +8,9 @@
 import UIKit
 
 class LoginViewController: UIViewController {
-    
+   
     var screen: LoginScreen?
+    var viewModel: LoginViewModel = LoginViewModel()
     
     override func loadView() {
         screen = LoginScreen()
@@ -18,11 +19,17 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configViewModal()
         configScreen()
+    }
+    
+    func configViewModal() {
+        viewModel.delegate = self
     }
     
     func configScreen() {
         screen?.delegate = self
+        screen?.emailTextField.delegate = self
     }
 }
 
@@ -32,7 +39,9 @@ extension LoginViewController: LoginScreenProtocol {
     }
     
     func tappedConfirmButton() {
-        navigationController?.pushViewController(TabBarController(), animated: true)
+        let email = screen?.emailTextField.text ?? ""
+        let password = screen?.passwordTextField.text ?? ""
+        viewModel.login(email: email, password: password)
     }
     
     func tappedRegisterNowButton() {
@@ -40,4 +49,35 @@ extension LoginViewController: LoginScreenProtocol {
     }
 }
 
+extension LoginViewController: LoginViewModelProtocol {
+    func loginSuccess() {
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+           let window = sceneDelegate.window {
+            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromRight, animations: nil)
+        }
+        navigationController?.pushViewController(TabBarController(), animated: true)
+    }
+    
+    func loginError(message: String) {
+        let alert = UIAlertController(title: "Login Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+}
 
+extension LoginViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == screen?.emailTextField {
+            return !string.contains(" ")
+        } else {
+            return true
+        }
+    }
+}
