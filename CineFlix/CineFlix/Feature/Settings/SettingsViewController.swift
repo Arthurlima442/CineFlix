@@ -14,7 +14,6 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         configScreen()
         configViewModal()
-        view.backgroundColor = .black
     }
     
     func configViewModal() {

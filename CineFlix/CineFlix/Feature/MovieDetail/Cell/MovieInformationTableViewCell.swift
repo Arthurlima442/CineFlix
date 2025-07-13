@@ -71,7 +71,7 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 25, weight: .bold)
-        label.text = "synopsis:"
+        label.text = "Synopsis:"
         label.textAlignment = .left
         label.textColor = .white
         return label

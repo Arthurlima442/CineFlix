@@ -67,7 +67,7 @@ class MovieImageTableViewCell: UITableViewCell {
             coverMovieImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             coverMovieImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             coverMovieImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            coverMovieImageView.heightAnchor.constraint(equalToConstant: 260),
+            coverMovieImageView.heightAnchor.constraint(equalToConstant: 300),
             
             backButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),

@@ -21,16 +21,16 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         configViewModal()
         configScreen()
-}
-
-func configViewModal() {
-    viewModel.delegate = self
-}
-
-func configScreen() {
-    screen?.delegate = self
-    screen?.emailTextField.delegate = self
-}
+    }
+    
+    func configViewModal() {
+        viewModel.delegate = self
+    }
+    
+    func configScreen() {
+        screen?.delegate = self
+        screen?.emailTextField.delegate = self
+    }
 }
 
 extension LoginViewController: LoginScreenProtocol {
@@ -51,11 +51,13 @@ extension LoginViewController: LoginScreenProtocol {
 
 extension LoginViewController: LoginViewModelProtocol {
     func loginSuccess() {
+        let tabBar = TabBarController()
+        
         if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
            let window = sceneDelegate.window {
+            window.rootViewController = tabBar
             UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromRight, animations: nil)
         }
-        navigationController?.pushViewController(TabBarController(), animated: true)
     }
     
     func loginError(message: String) {

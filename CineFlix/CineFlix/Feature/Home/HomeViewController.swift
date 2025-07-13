@@ -24,32 +24,14 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         configTableView()
         configScreen()
-        screenEssential()
-        hideButton()
-    }
-    
-    func screenEssential() {
-        if let screen = screen {
-            screen.frame = UIScreen.main.bounds
-            screen.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            screen.backgroundColor = .black
         }
-    }
     
-    func hideButton() {
-        self.navigationItem.hidesBackButton = true
-    }
     
     func configScreen() {
         screen?.delegate = self
     }
     
     func configTableView() {
-        // primeira opcao CASO VOCÊ NÃO QUEIRA CRIAR O METODO
-        // screen?.tableView.delegate = self
-        // screen?.tableView.dataSource = self
-        
-        // segunda opcao com o metodo
         screen?.configTableViewProtocols(delegate: self, dataSource: self)
     }
 }
@@ -73,6 +55,7 @@ extension HomeViewController: MovieCarouselTableViewCellProtocol {
         navigationController?.pushViewController(MovieDetailViewController(movie: movie), animated: true)
     }
 }
+
 extension HomeViewController: HomeMovieScreenProtocol {
     func tappedPresentCategoryMenu() {
         let categoryVC = CategoryMenuViewController()

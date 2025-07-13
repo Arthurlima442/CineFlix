@@ -34,10 +34,7 @@ class MovieDetailViewController: UIViewController {
     
     func configNavigation() {
         // Esconder botao padrao de voltar
-        navigationItem.hidesBackButton = true
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barTintColor = .black
-        navigationController?.view.backgroundColor = .black
+        navigationController?.isNavigationBarHidden = true
     }
     
     func configTableView() {
