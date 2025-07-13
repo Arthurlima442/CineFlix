@@ -2,29 +2,26 @@ import UIKit
 
 class CategoryMenuViewController: UIViewController {
     
-    private let categoryScreen = CategoryMenuScreen()
+    var screen: CategoryMenuScreen?
     private let viewModel = CategoryMenuViewModel()
     
     override func loadView() {
-        view = categoryScreen
+        screen = CategoryMenuScreen()
+        view = screen
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configScreen()
         configTableView()
+        configScrenn()
     }
     
-    private func configScreen() {
-        categoryScreen.closeButton.addTarget(self, action: #selector(closeModal), for: .touchUpInside)
+    func configScrenn() {
+        screen?.delegate = self
     }
     
-    private func configTableView() {
-        categoryScreen.configTableViewProtocols(delegate: self, dataSource: self)
-    }
-    
-    @objc private func closeModal() {
-        dismiss(animated: true, completion: nil)
+    func configTableView() {
+        screen?.configTableViewProtocols(delegate: self, dataSource: self)
     }
 }
 
@@ -37,10 +34,16 @@ extension CategoryMenuViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.identifier, for: indexPath) as? CategoryTableViewCell else {
             return UITableViewCell()
-        }
-
+}
+        
         let category = viewModel.categories[indexPath.row]
         cell.setup(title: category)
         return cell
+    }
+}
+
+extension CategoryMenuViewController: CategoryMenuScreenProtocol {
+    func tappedCloseButton() {
+        dismiss(animated: true, completion: nil)
     }
 }

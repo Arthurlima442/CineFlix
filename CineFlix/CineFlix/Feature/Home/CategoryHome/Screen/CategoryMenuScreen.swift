@@ -4,10 +4,15 @@
 //
 //  Created by Arthur Lima on 23/06/2025.
 //
-
 import UIKit
 
+protocol CategoryMenuScreenProtocol: AnyObject {
+    func tappedCloseButton()
+}
+
 class CategoryMenuScreen: UIView {
+    
+    weak var delegate: CategoryMenuScreenProtocol?
     
     lazy var categoryLabel: UILabel = {
         let category = UILabel()
@@ -24,9 +29,14 @@ class CategoryMenuScreen: UIView {
         let image = UIImage(systemName: "arrow.left.square")?.withRenderingMode(.alwaysOriginal)
         button.setImage(image, for: .normal)
         button.tintColor = .white
+        button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    @objc private func closeButtonTapped() {
+        delegate?.tappedCloseButton()
+    }
     
     let tableView: UITableView = {
         let table = UITableView()
