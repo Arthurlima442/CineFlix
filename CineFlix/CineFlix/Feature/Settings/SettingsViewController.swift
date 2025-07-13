@@ -1,15 +1,9 @@
-//
-//  SettingsViewController.swift
-//  CineFlix
-//
-//  Created by Arthur Lima on 10/06/2025.
-//
-
 import UIKit
 
 class SettingsViewController: UIViewController {
     
     var screen: SettingsScreen?
+    var viewModel: SettingsViewModel = SettingsViewModel()
     
     override func loadView() {
         screen = SettingsScreen()
@@ -19,32 +13,39 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configScreen()
+        configViewModal()
         view.backgroundColor = .black
     }
     
-    private func configScreen() {
+    func configViewModal() {
+        viewModel.delegate = self
+    }
+    
+    func configScreen() {
         screen?.delegate = self
     }
 }
+
+// MARK: - SettingsScreenProtocol
 extension SettingsViewController: SettingsScreenProtocol {
     
     func tappedExitAppButton() {
         let alert = UIAlertController(
-            title: "Sair do App",
-            message: "Você deseja mesmo sair?",
+            title: "Exit the App",
+            message: "Do you really want to leave?",
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "Cancelar", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
-        alert.addAction(UIAlertAction(title: "Sair", style: .destructive) { _ in
+        alert.addAction(UIAlertAction(title: "Exit", style: .destructive) { _ in
             let loginVC = ChooseSignInViewController()
             let navController = UINavigationController(rootViewController: loginVC)
-
+            
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
                let window = sceneDelegate.window {
                 window.rootViewController = navController
-                UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromLeft, animations: nil)
+                UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: nil)
             }
         })
         
@@ -53,31 +54,36 @@ extension SettingsViewController: SettingsScreenProtocol {
     
     func tappedDeleteAccontButton() {
         let alert = UIAlertController(
-            title: "Deletar Conta",
-            message: "Tem certeza que deseja deletar sua conta? Essa ação não pode ser desfeita.",
+            title: "Delete Account",
+            message: "Are you sure you want to permanently delete your account?",
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "Cancelar", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
-        alert.addAction(UIAlertAction(title: "Deletar", style: .destructive) { _ in
-            // Aqui você pode limpar dados de usuário, fazer logout etc.
-            let loginVC = ChooseSignInViewController()
-            let navController = UINavigationController(rootViewController: loginVC)
-//            navController.navigationBar.isHidden = true
-            
-            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-               let window = sceneDelegate.window {
-                window.rootViewController = navController
-                UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromLeft, animations: nil)
-            }
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+            self.viewModel.deleteAccount()
         })
         
         present(alert, animated: true)
     }
 }
 
-
-
-
-
+extension SettingsViewController: SettingsViewModelProtocol {
+    func accountDeletedSuccessfully() {
+        let loginVC = ChooseSignInViewController()
+        let navController = UINavigationController(rootViewController: loginVC)
+        
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+           let window = sceneDelegate.window {
+            window.rootViewController = navController
+            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromLeft, animations: nil)
+        }
+    }
+    
+    func accountDeletionFailed(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+}

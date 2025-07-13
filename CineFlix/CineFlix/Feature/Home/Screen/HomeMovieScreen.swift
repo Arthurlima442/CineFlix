@@ -45,7 +45,7 @@ class HomeMovieScreen: UIView {
         search.textColor = .white
         // Placeholder branco
         search.attributedPlaceholder = NSAttributedString(
-            string: "search movie:",
+            string: "Search movie:",
             attributes: [.foregroundColor: UIColor.lightGray]
         )
         return search

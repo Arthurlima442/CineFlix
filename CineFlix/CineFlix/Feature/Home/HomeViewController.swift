@@ -24,16 +24,22 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         configTableView()
         configScreen()
-        view.backgroundColor = .black
-        
-        // ← ESSENCIAL
+        screenEssential()
+        hideButton()
+    }
+    
+    func screenEssential() {
         if let screen = screen {
             screen.frame = UIScreen.main.bounds
             screen.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             screen.backgroundColor = .black
         }
     }
-
+    
+    func hideButton() {
+        self.navigationItem.hidesBackButton = true
+    }
+    
     func configScreen() {
         screen?.delegate = self
     }

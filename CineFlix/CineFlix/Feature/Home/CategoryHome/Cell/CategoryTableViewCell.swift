@@ -35,7 +35,6 @@ class CategoryTableViewCell: UITableViewCell {
     func addElements() {
         //  contentView.addSubview(suaView)
         contentView.addSubview(titleLabel)
-        
     }
     
     func configConstraints() {

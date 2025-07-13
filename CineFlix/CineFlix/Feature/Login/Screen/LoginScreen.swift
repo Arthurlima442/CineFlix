@@ -40,6 +40,7 @@ class LoginScreen: UIView {
         let email = UITextField()
         email.translatesAutoresizingMaskIntoConstraints = false
         email.borderStyle = .roundedRect
+        email.text = "arthurlima442@gmail.com"
         email.autocapitalizationType = .none
         email.clipsToBounds = true
         email.autocorrectionType = .no
@@ -61,6 +62,7 @@ class LoginScreen: UIView {
         password.translatesAutoresizingMaskIntoConstraints = false
         password.borderStyle = .roundedRect
         password.clipsToBounds = true
+        password.text = "123456"
         password.layer.cornerRadius = 4
         password.layer.borderColor = UIColor.white.cgColor
         password.layer.borderWidth = 1

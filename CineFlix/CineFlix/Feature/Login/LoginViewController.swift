@@ -8,7 +8,7 @@
 import UIKit
 
 class LoginViewController: UIViewController {
-   
+    
     var screen: LoginScreen?
     var viewModel: LoginViewModel = LoginViewModel()
     
@@ -21,16 +21,16 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         configViewModal()
         configScreen()
-    }
-    
-    func configViewModal() {
-        viewModel.delegate = self
-    }
-    
-    func configScreen() {
-        screen?.delegate = self
-        screen?.emailTextField.delegate = self
-    }
+}
+
+func configViewModal() {
+    viewModel.delegate = self
+}
+
+func configScreen() {
+    screen?.delegate = self
+    screen?.emailTextField.delegate = self
+}
 }
 
 extension LoginViewController: LoginScreenProtocol {
