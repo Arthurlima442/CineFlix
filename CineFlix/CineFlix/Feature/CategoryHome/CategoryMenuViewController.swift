@@ -1,5 +1,8 @@
 import UIKit
 
+
+#warning("arrumarrrrrr")
+
 class CategoryMenuViewController: UIViewController {
     
     var screen: CategoryMenuScreen?
@@ -34,7 +37,7 @@ extension CategoryMenuViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.identifier, for: indexPath) as? CategoryTableViewCell else {
             return UITableViewCell()
-}
+        }
         
         let category = viewModel.categories[indexPath.row]
         cell.setup(title: category)

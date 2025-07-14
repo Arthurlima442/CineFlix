@@ -14,7 +14,7 @@ class HomeMovieScreen: UIView {
     
     weak var delegate: HomeMovieScreenProtocol?
     
-    private let safeAreaTopBackground: UIView = {
+    lazy var safeAreaTopBackground: UIView = {
         let view = UIView()
         view.backgroundColor = .black
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -122,7 +122,8 @@ class HomeMovieScreen: UIView {
             tableView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)        ])
+            tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
     
     func configTableViewProtocols(delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {

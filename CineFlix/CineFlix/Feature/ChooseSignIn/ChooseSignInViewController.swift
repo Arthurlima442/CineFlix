@@ -20,12 +20,12 @@ class ChooseSignInViewController: UIViewController {
         super.viewDidLoad()
         configScreen()
     }
-//    Serve para mostrar a navigation bar sempre que essa tela for prestes a aparecer, mesmo que ela tenha sido escondida em outras telas.
+    //    Serve para mostrar a navigation bar sempre que essa tela for prestes a aparecer, mesmo que ela tenha sido escondida em outras telas.
     
     override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-            navigationController?.setNavigationBarHidden(false, animated: false)
-        }
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
     
     func configScreen() {
         screen?.delegate = self

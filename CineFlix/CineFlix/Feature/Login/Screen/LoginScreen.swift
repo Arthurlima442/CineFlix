@@ -112,7 +112,6 @@ class LoginScreen: UIView {
     
     @objc func tappedRegisterNowButton() {
         delegate?.tappedRegisterNowButton()
-        
     }
     
     @objc func tappedConfirmButton() {

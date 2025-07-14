@@ -11,7 +11,7 @@ class CategoryTableViewCell: UITableViewCell {
     
     static let identifier: String = String(describing: CategoryTableViewCell.self)
     
-    let titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)

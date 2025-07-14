@@ -19,10 +19,10 @@ class ForgetPasswordViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configScreen()
-        
-        func configScreen() {
-            screen?.delegate = self
-        }
+    }
+    
+    func configScreen() {
+        screen?.delegate = self
     }
 }
 
@@ -31,5 +31,3 @@ extension ForgetPasswordViewController: ForgetPasswordScreenProtocol {
         print(#function)
     }
 }
-
-    

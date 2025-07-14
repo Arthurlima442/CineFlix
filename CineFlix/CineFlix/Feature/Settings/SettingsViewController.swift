@@ -25,7 +25,6 @@ class SettingsViewController: UIViewController {
     }
 }
 
-// MARK: - SettingsScreenProtocol
 extension SettingsViewController: SettingsScreenProtocol {
     
     func tappedExitAppButton() {

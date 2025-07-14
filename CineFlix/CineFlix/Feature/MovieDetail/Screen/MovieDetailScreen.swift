@@ -12,7 +12,6 @@ class MovieDetailScreen: UIView {
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        // TO DO: REGISTER
         tableView.register(MovieImageTableViewCell.self, forCellReuseIdentifier: MovieImageTableViewCell.identifier)
         tableView.register(MovieInformationTableViewCell.self, forCellReuseIdentifier: MovieInformationTableViewCell.identifier)
         tableView.backgroundColor = .black
@@ -41,7 +40,6 @@ class MovieDetailScreen: UIView {
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-            
         ])
     }
     

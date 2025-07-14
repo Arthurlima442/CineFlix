@@ -12,7 +12,7 @@ class MoviePosterCollectionViewCell: UICollectionViewCell {
     static let identifier: String = String(describing: MoviePosterCollectionViewCell
         .self)
     
-    private let imageView: UIImageView = {
+    lazy var imageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
@@ -23,19 +23,25 @@ class MoviePosterCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .white
-        contentView.layer.cornerRadius = 10
-        contentView.clipsToBounds = true
-        setupViews()
+        addElements()
+        configConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupViews() {
+    func setupStyle() {
+        contentView.backgroundColor = .white
+        contentView.layer.cornerRadius = 10
+        contentView.clipsToBounds = true
+    }
+    
+    func addElements() {
         contentView.addSubview(imageView)
-        
+    }
+    
+    func configConstraints() {
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

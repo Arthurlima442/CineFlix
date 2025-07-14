@@ -18,6 +18,7 @@ import Foundation
 //    return movieList[indexPath.row]
 // }
 
+#warning("arrumaaaa")
 
 class MovieDetailViewModel {
     
@@ -35,7 +36,7 @@ class MovieDetailViewModel {
         return movie
     }
     
-    func getMoview2() -> Movie {
-        return movie
-    }
+//    var numberOfRowsInSection: Int {
+//        return categories.count
+//    }
 }

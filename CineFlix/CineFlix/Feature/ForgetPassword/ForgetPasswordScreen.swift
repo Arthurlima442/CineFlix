@@ -102,7 +102,6 @@ class ForgetPasswordScreen: UIView {
         backgroundColor = .black
         addElements()
         configConstraints()
-        
     }
     
     required init?(coder: NSCoder) {

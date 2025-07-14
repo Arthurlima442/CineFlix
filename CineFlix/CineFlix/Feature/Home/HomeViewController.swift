@@ -22,10 +22,9 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configTableView()
         configScreen()
-        }
-    
+        configTableView()
+    }
     
     func configScreen() {
         screen?.delegate = self
@@ -64,5 +63,3 @@ extension HomeViewController: HomeMovieScreenProtocol {
         present(categoryVC, animated: true)
     }
 }
-
-

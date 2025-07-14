@@ -1,10 +1,7 @@
 //
 //  LoginViewController.swift
 //  CineFlix
-//
 //  Created by Arthur Lima on 09/06/2025.
-//
-
 import UIKit
 
 class LoginViewController: UIViewController {
@@ -65,7 +62,6 @@ extension LoginViewController: LoginViewModelProtocol {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
-    
 }
 
 extension LoginViewController: UITextFieldDelegate {

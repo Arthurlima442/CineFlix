@@ -1,17 +1,12 @@
 //
 //  AppDelegate.swift
 //  CineFlix
-//
 //  Created by Arthur Lima on 09/06/2025.
-//
-
 import UIKit
 import FirebaseCore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
