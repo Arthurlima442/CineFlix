@@ -6,8 +6,6 @@
 //
 import Foundation
 
-#warning("completarrr")
-
 class CategoryMenuViewModel {
     var categories: [String] = [
         "Action",
@@ -21,4 +19,12 @@ class CategoryMenuViewModel {
         "Documentary",
         "Animation"
     ]
+    
+    var numberOfRowsInSection: Int {
+        return categories.count
+    }
+    
+    func loudCurrentMovieSection(indexPath: IndexPath) -> String {
+        return categories[indexPath.row]
+    }
 }

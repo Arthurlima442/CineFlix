@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MovieSection {
+struct MovieSection: Codable {
     var title: String
     var movieList: [Movie]
 }

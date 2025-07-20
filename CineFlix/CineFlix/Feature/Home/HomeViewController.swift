@@ -24,10 +24,16 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         configScreen()
         configTableView()
+        configViewModel()
+        viewModel.fetchMovieMock()
     }
     
     func configScreen() {
         screen?.delegate = self
+    }
+    
+    func configViewModel() {
+        viewModel.delegate = self
     }
     
     func configTableView() {
@@ -61,5 +67,23 @@ extension HomeViewController: HomeMovieScreenProtocol {
         categoryVC.modalPresentationStyle = .custom
         categoryVC.transitioningDelegate = transitionDelegate
         present(categoryVC, animated: true)
+    }
+}
+
+extension HomeViewController: HomeViewModelProtocol {
+    func startLoading() {
+        // start
+    }
+    
+    func stopLoading() {
+        // stop
+    }
+    
+    func failure(message: String) {
+        // exibe alert
+    }
+    
+    func successMovie() {
+        screen?.tableView.reloadData()
     }
 }

@@ -1,8 +1,5 @@
 import UIKit
 
-
-#warning("arrumarrrrrr")
-
 class CategoryMenuViewController: UIViewController {
     
     var screen: CategoryMenuScreen?
@@ -31,16 +28,14 @@ class CategoryMenuViewController: UIViewController {
 extension CategoryMenuViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.categories.count
+        return viewModel.numberOfRowsInSection
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.identifier, for: indexPath) as? CategoryTableViewCell else {
             return UITableViewCell()
         }
-        
-        let category = viewModel.categories[indexPath.row]
-        cell.setup(title: category)
+        cell.setup(title: viewModel.loudCurrentMovieSection(indexPath: indexPath))
         return cell
     }
 }

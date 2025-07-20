@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Movie {
+struct Movie: Codable {
     var movieImage: String
     var title: String
     var ageClassification: Int
