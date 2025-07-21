@@ -14,10 +14,16 @@ class CategoryMenuViewController: UIViewController {
         super.viewDidLoad()
         configTableView()
         configScrenn()
+        configViewModel()
+        viewModel.fetchMovieMock()
     }
     
     func configScrenn() {
         screen?.delegate = self
+    }
+    
+    func configViewModel() {
+        viewModel.delegate = self
     }
     
     func configTableView() {
@@ -44,4 +50,24 @@ extension CategoryMenuViewController: CategoryMenuScreenProtocol {
     func tappedCloseButton() {
         dismiss(animated: true, completion: nil)
     }
+}
+
+extension CategoryMenuViewController: CategoryMenuViewModelProtocol {
+    func startLoading() {
+        //start
+    }
+    
+    func stopLoading() {
+//stop
+    }
+    
+    func successCategory() {
+        screen?.tableView.reloadData()
+    }
+    
+    func failure(message: String) {
+        // alert
+    }
+    
+    
 }
