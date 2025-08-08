@@ -21,32 +21,47 @@ class HomeMovieScreen: UIView {
         return view
     }()
     
-    lazy var cineFlixLabel: UILabel = {
-        let text = UILabel()
-        text.translatesAutoresizingMaskIntoConstraints = false
-        text.text = "CineFlix"
-        text.font = UIFont.systemFont(ofSize: 45)
-        text.textColor = .red
-        text.textAlignment = .center
-        text.backgroundColor = .black
-        return text
-    }()
+//    lazy var searchTextField: UITextField = {
+//        let search = UITextField()
+//        search.translatesAutoresizingMaskIntoConstraints = false
+//        search.borderStyle = .roundedRect
+//        search.clipsToBounds = true
+//        search.layer.cornerRadius = 4
+//        search.layer.borderColor = UIColor.white.cgColor
+//        search.layer.borderWidth = 1
+//        search.backgroundColor = .black
+//        search.textColor = .white
+//        // Placeholder branco
+//        search.attributedPlaceholder = NSAttributedString(
+//            string: "Search movie:",
+//            attributes: [.foregroundColor: UIColor.lightGray]
+//        )
+//        return search
+//    }()
     
-    lazy var searchTextField: UITextField = {
-        let search = UITextField()
+    lazy var searchBar: UISearchBar = {
+        let search = UISearchBar()
         search.translatesAutoresizingMaskIntoConstraints = false
-        search.borderStyle = .roundedRect
-        search.clipsToBounds = true
-        search.layer.cornerRadius = 4
-        search.layer.borderColor = UIColor.white.cgColor
-        search.layer.borderWidth = 1
+        search.placeholder = "Search movie"
+        search.searchBarStyle = .minimal
+        search.barTintColor = .black
         search.backgroundColor = .black
-        search.textColor = .white
-        // Placeholder branco
-        search.attributedPlaceholder = NSAttributedString(
-            string: "Search movie:",
-            attributes: [.foregroundColor: UIColor.lightGray]
-        )
+        
+        // Estilo do campo de texto
+        if let textField = search.searchTextField as UITextField? {
+            textField.textColor = .white
+            textField.backgroundColor = UIColor.darkGray
+            textField.layer.cornerRadius = 10
+            textField.layer.masksToBounds = true
+            
+            // Placeholder branco
+            textField.attributedPlaceholder = NSAttributedString(
+                string: "Search movie",
+                attributes: [
+                    .foregroundColor: UIColor.white.withAlphaComponent(0.8)
+                ]
+            )
+        }
         return search
     }()
     
@@ -69,7 +84,9 @@ class HomeMovieScreen: UIView {
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(MovieCarouselTableViewCell.self, forCellReuseIdentifier: MovieCarouselTableViewCell.identifier)
+        tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: MovieTableViewCell.identifier)
+        tableView.register(ErrorTableViewCell.self, forCellReuseIdentifier: ErrorTableViewCell.identifier)
+        tableView.register(EmptyTableViewCell.self, forCellReuseIdentifier: EmptyTableViewCell.identifier)
         tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         tableView.bounces = false
@@ -94,8 +111,7 @@ class HomeMovieScreen: UIView {
     func addElements() {
         addSubview(safeAreaTopBackground)
         addSubview(tableView)
-        addSubview(cineFlixLabel)
-        addSubview(searchTextField)
+        addSubview(searchBar)
         addSubview(menuButton)
     }
     
@@ -106,20 +122,14 @@ class HomeMovieScreen: UIView {
             safeAreaTopBackground.trailingAnchor.constraint(equalTo: trailingAnchor),
             safeAreaTopBackground.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             
-            cineFlixLabel.topAnchor.constraint(equalTo: safeAreaTopBackground.bottomAnchor, constant: 8),
-            cineFlixLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            cineFlixLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            cineFlixLabel.heightAnchor.constraint(equalToConstant: 40),
-            
             menuButton.topAnchor.constraint(equalTo: safeAreaTopBackground.bottomAnchor),
             menuButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             
-            searchTextField.topAnchor.constraint(equalTo: cineFlixLabel.bottomAnchor, constant: 25),
-            searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            searchTextField.heightAnchor.constraint(equalToConstant: 40),
+            searchBar.topAnchor.constraint(equalTo: menuButton.topAnchor, constant: 20),
+            searchBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
+            searchBar.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
             
-            tableView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)

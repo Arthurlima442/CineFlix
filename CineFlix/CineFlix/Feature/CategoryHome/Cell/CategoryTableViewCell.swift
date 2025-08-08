@@ -19,21 +19,26 @@ class CategoryTableViewCell: UITableViewCell {
         return label
     }()
     
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
         backgroundColor = .black
         addElements()
         configConstraints()
+        setupAppearance()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setupAppearance() {
+        backgroundColor = .darkGray
+        layer.cornerRadius = 16
+        layer.masksToBounds = true
+    }
+    
     func addElements() {
-        //  contentView.addSubview(suaView)
         contentView.addSubview(titleLabel)
     }
     
@@ -44,7 +49,9 @@ class CategoryTableViewCell: UITableViewCell {
         ])
     }
     
-    func setup(title: String) {
-        titleLabel.text = title
+    func setupCell(genre: GenreItem) {
+        titleLabel.text = genre.genre.rawValue
+        titleLabel.textColor = genre.isSelected ? .black : .white
+        backgroundColor = genre.isSelected ? .white : .black
     }
 }

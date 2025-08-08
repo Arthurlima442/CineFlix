@@ -15,29 +15,34 @@ protocol CategoryMenuViewModelProtocol: AnyObject {
 
 class CategoryMenuViewModel {
     
-    private var category: [String] = []
     weak var delegate: CategoryMenuViewModelProtocol?
+    private(set) var isError: Bool = false
+    var genre: MovieGenre
     
-    func fetchMovieMock() {
-        delegate?.startLoading()
-        LocalFileReader.loadJSON(fileName: "categories", type: CategoryList.self) { result in
-            self.delegate?.stopLoading()
-            switch result {
-            case .success(let success):
-                self.category = success.categories
-                self.delegate?.successCategory()
-            case .failure(let failure):
-                print("Deu ruim: \(failure.errorDescription ?? "")")
-                self.delegate?.failure(message: failure.errorDescription ?? "")
+    init(genre: MovieGenre) {
+        self.genre = genre
+    }
+    
+    private lazy var genreItems: [GenreItem] =
+    MovieGenre.allCases.map {
+        GenreItem(genre: $0, isSelected: $0 == genre)
+    }
+    
+    func selectGenre(at index: Int) {
+        for indexGenre in genreItems.indices {
+            if index == indexGenre {
+                genreItems[indexGenre].isSelected = true
+            } else {
+                genreItems[indexGenre].isSelected = false
             }
         }
     }
     
-    var numberOfRowsInSection: Int {
-        return category.count
+    func numberOfGenre() -> Int {
+        return genreItems.count
     }
     
-    func loudCurrentMovieSection(indexPath: IndexPath) -> String {
-        return category[indexPath.row]
+    func loadCurrentGenre(at index: Int) -> GenreItem {
+        return genreItems[index]
     }
 }

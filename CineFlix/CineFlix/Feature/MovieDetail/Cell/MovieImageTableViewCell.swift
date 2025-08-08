@@ -74,7 +74,7 @@ class MovieImageTableViewCell: UITableViewCell {
         ])
     }
     
-    func setupCell(movie: Movie) {
+    func setupCell(movie: DetailMovie) {
         coverMovieImageView.image = UIImage(named: movie.movieImage)
     }
 }

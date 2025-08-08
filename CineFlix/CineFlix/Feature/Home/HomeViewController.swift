@@ -11,6 +11,7 @@ class HomeViewController: UIViewController {
     
     private let transitionDelegate = LeftSideTransitioningDelegate()
     
+    
     var screen: HomeMovieScreen?
     private var viewModel: HomeViewModel = HomeViewModel()
     
@@ -22,10 +23,24 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        titleNav()
+        configSearch()
         configScreen()
         configTableView()
         configViewModel()
-        viewModel.fetchMovieMock()
+        viewModel.fetchPopularMovie()
+    }
+    
+    func titleNav() {
+        title = "CineFlix"
+        navigationController?.navigationBar.titleTextAttributes = [
+            .foregroundColor: UIColor.red,
+            .font: UIFont.systemFont(ofSize: 35, weight: .bold)
+        ]
+    }
+    
+    func configSearch() {
+        screen?.searchBar.delegate = self
     }
     
     func configScreen() {
@@ -41,29 +56,10 @@ class HomeViewController: UIViewController {
     }
 }
 
-extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfRowsInSection
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieCarouselTableViewCell.identifier, for: indexPath) as? MovieCarouselTableViewCell else {
-            return UITableViewCell()
-        }
-        cell.setupCell(movieSection: viewModel.loudCurrentMovieSection(indexPath: indexPath), delegate: self)
-        return cell
-    }
-}
-
-extension HomeViewController: MovieCarouselTableViewCellProtocol {
-    func tappedMovie(movie: Movie) {
-        navigationController?.pushViewController(MovieDetailViewController(movie: movie), animated: true)
-    }
-}
-
 extension HomeViewController: HomeMovieScreenProtocol {
     func tappedPresentCategoryMenu() {
         let categoryVC = CategoryMenuViewController()
+        categoryVC.delegate = self
         categoryVC.modalPresentationStyle = .custom
         categoryVC.transitioningDelegate = transitionDelegate
         present(categoryVC, animated: true)
@@ -71,6 +67,14 @@ extension HomeViewController: HomeMovieScreenProtocol {
 }
 
 extension HomeViewController: HomeViewModelProtocol {
+    func success() {
+        screen?.tableView.reloadData()
+    }
+    
+    func failure() {
+        screen?.tableView.reloadData()
+    }
+    
     func startLoading() {
         // start
     }
@@ -78,12 +82,52 @@ extension HomeViewController: HomeViewModelProtocol {
     func stopLoading() {
         // stop
     }
-    
-    func failure(message: String) {
-        // exibe alert
+}
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.numberOfNames()
     }
     
-    func successMovie() {
-        screen?.tableView.reloadData()
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if viewModel.isError {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ErrorTableViewCell.identifier, for: indexPath) as? ErrorTableViewCell
+            cell?.setupCell(message: "Infelizmente tivemos um erro, tente novamente mais tarde")
+            return cell ?? UITableViewCell()
+        } else if viewModel.isNamesEmpty {
+            let cell = tableView.dequeueReusableCell(withIdentifier: EmptyTableViewCell.identifier, for: indexPath) as? EmptyTableViewCell
+            cell?.setupCell(message: "Não encontramos nenhum filme")
+            return cell ?? UITableViewCell()
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieTableViewCell.identifier, for: indexPath) as? MovieTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.setupCell(movieData: viewModel.loudCurrentMovieSection(indexPath: indexPath))
+            return cell
+        }
     }
+}
+    
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//         let movie = viewModel.loudCurrentMovieSection(indexPath: indexPath)
+//        navigationController?.pushViewController(MovieDetailViewController(movie: movie.id), animated: true)
+//    }
+//}
+
+extension HomeViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.searchMovie(movie: searchText)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+}
+
+extension HomeViewController: CategoryMenuViewControllerProtocol {
+    func selectCategory(genreItem: GenreItem) {
+        viewModel.fetchGenre(genre: genreItem)
+        
+    }
+    
+    
 }

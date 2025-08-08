@@ -17,8 +17,8 @@ class CategoryMenuScreen: UIView {
     lazy var categoryLabel: UILabel = {
         let category = UILabel()
         category.translatesAutoresizingMaskIntoConstraints = false
-        category.text = "Categorys:"
-        category.textColor = .white
+        category.text = "Category's:"
+        category.textColor = .red
         category.font = .systemFont(ofSize: 25, weight: .bold)
         category.textAlignment = .left
         return category

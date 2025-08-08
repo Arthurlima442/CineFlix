@@ -144,7 +144,7 @@ class MovieInformationTableViewCell: UITableViewCell {
         ])
     }
     
-    func setupCell(movie: Movie) {
+    func setupCell(movie: DetailMovie) {
         movieNameLabel.text = movie.title
         ageRangeLabel.text = String(movie.ageClassification)
         dateLaunchLabel.text = movie.launch

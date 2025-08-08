@@ -20,9 +20,9 @@ import Foundation
 
 class MovieDetailViewModel {
     
-    private let movie: Movie
+    private let movie: DetailMovie
     
-    init(movie: Movie) {
+    init(movie: DetailMovie) {
         self.movie = movie
     }
     
@@ -30,7 +30,7 @@ class MovieDetailViewModel {
         return 2
     }
     
-    var getMovie: Movie {
+    var getMovie: DetailMovie {
         return movie
     }
 }

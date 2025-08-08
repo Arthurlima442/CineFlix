@@ -1,9 +1,16 @@
 import UIKit
 
+protocol CategoryMenuViewControllerProtocol: AnyObject {
+    func selectCategory(genreItem: GenreItem)
+}
+
 class CategoryMenuViewController: UIViewController {
     
+    weak var delegate: CategoryMenuViewControllerProtocol?
+    
     var screen: CategoryMenuScreen?
-    private let viewModel = CategoryMenuViewModel()
+    private let viewModel = CategoryMenuViewModel(genre: .all)
+    #warning(arrumar")
     
     override func loadView() {
         screen = CategoryMenuScreen()
@@ -13,12 +20,11 @@ class CategoryMenuViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configTableView()
-        configScrenn()
+        configScreen()
         configViewModel()
-        viewModel.fetchMovieMock()
     }
     
-    func configScrenn() {
+    func configScreen() {
         screen?.delegate = self
     }
     
@@ -34,15 +40,22 @@ class CategoryMenuViewController: UIViewController {
 extension CategoryMenuViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfRowsInSection
+        return viewModel.numberOfGenre()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.identifier, for: indexPath) as? CategoryTableViewCell else {
             return UITableViewCell()
         }
-        cell.setup(title: viewModel.loudCurrentMovieSection(indexPath: indexPath))
+        
+        cell.setupCell(genre: viewModel.loadCurrentGenre(at: indexPath.item))
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let genreItem = viewModel.loadCurrentGenre(at: indexPath.row)
+        delegate?.selectCategory(genreItem: genreItem)
+        dismiss(animated: true)
     }
 }
 
@@ -58,7 +71,7 @@ extension CategoryMenuViewController: CategoryMenuViewModelProtocol {
     }
     
     func stopLoading() {
-//stop
+        //stop
     }
     
     func successCategory() {
@@ -68,6 +81,5 @@ extension CategoryMenuViewController: CategoryMenuViewModelProtocol {
     func failure(message: String) {
         // alert
     }
-    
-    
 }
+

@@ -12,7 +12,7 @@ class MovieDetailViewController: UIViewController {
     var screen: MovieDetailScreen?
     var viewModel: MovieDetailViewModel
     
-    init(movie: Movie) {
+    init(movie: DetailMovie) {
         self.viewModel = MovieDetailViewModel(movie: movie)
         super.init(nibName: nil, bundle: nil)
     }

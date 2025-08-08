@@ -9,5 +9,5 @@ import Foundation
 
 struct MovieSection: Codable {
     var title: String
-    var movieList: [Movie]
+    var movieList: [DetailMovie]
 }
