@@ -10,8 +10,6 @@ import UIKit
 class HomeViewController: UIViewController {
     
     private let transitionDelegate = LeftSideTransitioningDelegate()
-    
-    
     var screen: HomeMovieScreen?
     private var viewModel: HomeViewModel = HomeViewModel()
     
@@ -58,7 +56,7 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: HomeMovieScreenProtocol {
     func tappedPresentCategoryMenu() {
-        let categoryVC = CategoryMenuViewController()
+        let categoryVC = CategoryMenuViewController(genre: viewModel.movieGenre)
         categoryVC.delegate = self
         categoryVC.modalPresentationStyle = .custom
         categoryVC.transitioningDelegate = transitionDelegate
@@ -128,6 +126,4 @@ extension HomeViewController: CategoryMenuViewControllerProtocol {
         viewModel.fetchGenre(genre: genreItem)
         
     }
-    
-    
 }

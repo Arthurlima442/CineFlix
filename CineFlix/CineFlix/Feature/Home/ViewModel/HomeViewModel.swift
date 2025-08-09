@@ -20,6 +20,7 @@ class HomeViewModel {
     private let service: HomeService = HomeService()
     private var movieDataList: [MovieSummary] = []
     private(set) var isError: Bool = false
+    private(set) var movieGenre: MovieGenre = .all
     
     func fetchPopularMovie() {
         service.fetchPopularMovies { result in
@@ -40,6 +41,7 @@ class HomeViewModel {
     
     
     func fetchGenre(genre: GenreItem) {
+        self.movieGenre = genre.genre
         if genre.genre == .all {
             fetchPopularMovie()
         } else {

@@ -9,8 +9,16 @@ class CategoryMenuViewController: UIViewController {
     weak var delegate: CategoryMenuViewControllerProtocol?
     
     var screen: CategoryMenuScreen?
-    private let viewModel = CategoryMenuViewModel(genre: .all)
-    #warning(arrumar")
+    private let viewModel: CategoryMenuViewModel
+
+    init(genre: MovieGenre) {
+        self.viewModel = CategoryMenuViewModel(genre: genre)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         screen = CategoryMenuScreen()
@@ -82,4 +90,3 @@ extension CategoryMenuViewController: CategoryMenuViewModelProtocol {
         // alert
     }
 }
-
