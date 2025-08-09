@@ -10,7 +10,7 @@ class CategoryMenuViewController: UIViewController {
     
     var screen: CategoryMenuScreen?
     private let viewModel: CategoryMenuViewModel
-
+    
     init(genre: MovieGenre) {
         self.viewModel = CategoryMenuViewModel(genre: genre)
         super.init(nibName: nil, bundle: nil)
@@ -61,8 +61,10 @@ extension CategoryMenuViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let genreItem = viewModel.loadCurrentGenre(at: indexPath.row)
-        delegate?.selectCategory(genreItem: genreItem)
+        let genreSelectedNow = viewModel.loadCurrentGenre(at: indexPath.row)
+        if genreSelectedNow.genre != viewModel.genre {
+            delegate?.selectCategory(genreItem: genreSelectedNow)
+        }
         dismiss(animated: true)
     }
 }

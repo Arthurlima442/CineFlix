@@ -39,7 +39,6 @@ class HomeViewModel {
     
     // MARK: - Ações
     
-    
     func fetchGenre(genre: GenreItem) {
         self.movieGenre = genre.genre
         if genre.genre == .all {
@@ -63,7 +62,7 @@ class HomeViewModel {
     func numberOfNames() -> Int {
         if isError {
             return 1
-        } else  if movieDataList.isEmpty {
+        } else if movieDataList.isEmpty {
             return 1
         } else {
             return movieDataList.count
