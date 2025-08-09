@@ -74,6 +74,14 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
 }
 
 extension MovieDetailViewController: MovieDetailViewModelProtocol {
+    func startLoading() {
+        
+    }
+    
+    func stopLoading() {
+        
+    }
+    
     func success() {
         configTableView()
     }

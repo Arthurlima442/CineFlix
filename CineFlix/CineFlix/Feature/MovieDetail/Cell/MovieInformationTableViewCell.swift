@@ -14,17 +14,8 @@ class MovieInformationTableViewCell: UITableViewCell {
     lazy var movieNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 30, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 30, weight: .medium)
         label.textAlignment = .center
-        label.textColor = .white
-        return label
-    }()
-    
-    lazy var ageRangeLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 25, weight: .bold)
-        label.textAlignment = .right
         label.textColor = .white
         return label
     }()
@@ -32,7 +23,7 @@ class MovieInformationTableViewCell: UITableViewCell {
     lazy var launchLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
         label.text = "Launch in:"
         label.textAlignment = .left
         label.textColor = .white
@@ -42,7 +33,7 @@ class MovieInformationTableViewCell: UITableViewCell {
     lazy var dateLaunchLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .left
         label.textColor = .white
         return label
@@ -51,7 +42,26 @@ class MovieInformationTableViewCell: UITableViewCell {
     lazy var durationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+        label.text = "Duration:"
+        label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
+        label.textAlignment = .right
+        label.textColor = .white
+        return label
+    }()
+    
+    lazy var durationMovieLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        label.textAlignment = .right
+        label.textColor = .white
+        return label
+    }()
+    
+    lazy var assessmentLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
         label.text = "Avaliação:"
         label.textAlignment = .left
         label.textColor = .white
@@ -61,7 +71,7 @@ class MovieInformationTableViewCell: UITableViewCell {
     lazy var averageVoteLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .left
         label.textColor = .white
         return label
@@ -70,7 +80,7 @@ class MovieInformationTableViewCell: UITableViewCell {
     lazy var synopsisLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
         label.text = "Synopsis:"
         label.textAlignment = .left
         label.textColor = .white
@@ -80,7 +90,7 @@ class MovieInformationTableViewCell: UITableViewCell {
     lazy var synopsisMovieLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .left
         label.numberOfLines = 0
         label.textColor = .white
@@ -102,10 +112,11 @@ class MovieInformationTableViewCell: UITableViewCell {
     func addElements() {
         //  contentView.addSubview(suaView)
         contentView.addSubview(movieNameLabel)
-        contentView.addSubview(ageRangeLabel)
+        contentView.addSubview(durationLabel)
+        contentView.addSubview(durationMovieLabel)
         contentView.addSubview(launchLabel)
         contentView.addSubview(dateLaunchLabel)
-        contentView.addSubview(durationLabel)
+        contentView.addSubview(assessmentLabel)
         contentView.addSubview(averageVoteLabel)
         contentView.addSubview(synopsisLabel)
         contentView.addSubview(synopsisMovieLabel)
@@ -119,22 +130,26 @@ class MovieInformationTableViewCell: UITableViewCell {
             movieNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             movieNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
-            ageRangeLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            ageRangeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            
             launchLabel.topAnchor.constraint(equalTo: movieNameLabel.bottomAnchor, constant: 20),
             launchLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
             dateLaunchLabel.topAnchor.constraint(equalTo: launchLabel.bottomAnchor, constant: 5),
             dateLaunchLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             
-            durationLabel.topAnchor.constraint(equalTo: dateLaunchLabel.bottomAnchor, constant: 20),
-            durationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            assessmentLabel.topAnchor.constraint(equalTo: dateLaunchLabel.bottomAnchor, constant: 20),
+            assessmentLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
-            averageVoteLabel.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 5),
+            averageVoteLabel.topAnchor.constraint(equalTo: assessmentLabel.bottomAnchor, constant: 5),
             averageVoteLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             
-            synopsisLabel.topAnchor.constraint(equalTo: averageVoteLabel.bottomAnchor, constant: 20),
+            durationLabel.topAnchor.constraint(equalTo: averageVoteLabel.bottomAnchor, constant: 20),
+            durationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            
+            durationMovieLabel.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 5),
+            durationMovieLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            
+            
+            synopsisLabel.topAnchor.constraint(equalTo: durationMovieLabel.bottomAnchor, constant: 20),
             synopsisLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
             synopsisMovieLabel.topAnchor.constraint(equalTo: synopsisLabel.bottomAnchor, constant: 5),
@@ -146,7 +161,7 @@ class MovieInformationTableViewCell: UITableViewCell {
     
     func setupCell(movie: MovieDetail) {
         movieNameLabel.text = movie.title
-        ageRangeLabel.text = "Adulto: \(movie.adult)"
+        durationMovieLabel.text = String("\(movie.runtime ?? 0) Minutos")
         dateLaunchLabel.text = Util.formatReleaseDate(movie.releaseDate)
         averageVoteLabel.text = String(movie.voteAverage)
         synopsisMovieLabel.text = movie.overview

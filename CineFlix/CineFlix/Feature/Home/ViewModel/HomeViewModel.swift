@@ -23,6 +23,7 @@ class HomeViewModel {
     private(set) var movieGenre: MovieGenre = .all
     
     func fetchPopularMovie() {
+        delegate?.startLoading()
         service.fetchPopularMovies { result in
             switch result {
             case .success(let success):
@@ -34,6 +35,8 @@ class HomeViewModel {
                 self.isError = true
                 self.delegate?.failure()
             }
+            
+            self.delegate?.stopLoading()
         }
     }
     
@@ -44,6 +47,7 @@ class HomeViewModel {
         if genre.genre == .all {
             fetchPopularMovie()
         } else {
+            delegate?.startLoading()
             service.fetchMoviesByGenre(genre.genre) { result in
                 switch result {
                 case .success(let success):
@@ -55,6 +59,7 @@ class HomeViewModel {
                     self.isError = true
                     self.delegate?.failure()
                 }
+                self.delegate?.stopLoading()
             }
         }
     }

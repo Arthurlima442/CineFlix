@@ -19,6 +19,10 @@ class HomeViewController: UIViewController {
         screen?.clipsToBounds = true
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        titleNav()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         titleNav()
@@ -31,6 +35,7 @@ class HomeViewController: UIViewController {
     
     func titleNav() {
         title = "CineFlix"
+        navigationController?.isNavigationBarHidden = false
         navigationController?.navigationBar.titleTextAttributes = [
             .foregroundColor: UIColor.red,
             .font: UIFont.systemFont(ofSize: 35, weight: .bold)
