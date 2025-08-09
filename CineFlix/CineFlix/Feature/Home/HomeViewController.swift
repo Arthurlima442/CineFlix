@@ -103,13 +103,12 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         }
     }
-}
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//         let movie = viewModel.loudCurrentMovieSection(indexPath: indexPath)
-//        navigationController?.pushViewController(MovieDetailViewController(movie: movie.id), animated: true)
-//    }
-//}
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let movie = viewModel.loudCurrentMovieSection(indexPath: indexPath)
+        navigationController?.pushViewController(MovieDetailViewController(idMovie: movie.id), animated: true)
+    }
+}
 
 extension HomeViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {

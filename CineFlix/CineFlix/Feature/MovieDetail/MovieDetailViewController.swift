@@ -8,12 +8,11 @@
 import UIKit
 
 class MovieDetailViewController: UIViewController {
-    
     var screen: MovieDetailScreen?
     var viewModel: MovieDetailViewModel
     
-    init(movie: DetailMovie) {
-        self.viewModel = MovieDetailViewModel(movie: movie)
+    init(idMovie: Int) {
+        self.viewModel = MovieDetailViewModel(idMovie: idMovie)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -28,8 +27,9 @@ class MovieDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configTableView()
+        configViewModel()
         configNavigation()
+        fetchRequest()
     }
     
     func configNavigation() {
@@ -39,6 +39,15 @@ class MovieDetailViewController: UIViewController {
     
     func configTableView() {
         screen?.configTableViewProtocols(delegate: self, dataSource: self)
+        self.screen?.tableView.reloadData()
+    }
+    
+    func fetchRequest() {
+        viewModel.fetchDetail()
+    }
+    
+    func configViewModel() {
+        viewModel.delegate = self
     }
 }
 
@@ -51,13 +60,26 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: MovieImageTableViewCell.identifier, for: indexPath) as? MovieImageTableViewCell
             cell?.delegate = self
-            cell?.setupCell(movie: viewModel.getMovie)
+
+            guard let movieDetail = viewModel.getMovieDetail else { return UITableViewCell() }
+            cell?.setupCell(movieData: movieDetail)
             return cell ?? UITableViewCell()
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: MovieInformationTableViewCell.identifier, for: indexPath) as? MovieInformationTableViewCell
-            cell?.setupCell(movie: viewModel.getMovie)
+            guard let movieDetail = viewModel.getMovieDetail else { return UITableViewCell() }
+            cell?.setupCell(movie: movieDetail)
             return cell ?? UITableViewCell()
         }
+    }
+}
+
+extension MovieDetailViewController: MovieDetailViewModelProtocol {
+    func success() {
+        configTableView()
+    }
+    
+    func failure() {
+        configTableView()
     }
 }
 

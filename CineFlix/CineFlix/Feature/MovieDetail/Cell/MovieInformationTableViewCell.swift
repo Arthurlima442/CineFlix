@@ -48,17 +48,17 @@ class MovieInformationTableViewCell: UITableViewCell {
         return label
     }()
     
-    lazy var duratioLabel: UILabel = {
+    lazy var durationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 25, weight: .bold)
-        label.text = "Duration:"
+        label.text = "Avaliação:"
         label.textAlignment = .left
         label.textColor = .white
         return label
     }()
     
-    lazy var duratioMovieLabel: UILabel = {
+    lazy var averageVoteLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
@@ -105,8 +105,8 @@ class MovieInformationTableViewCell: UITableViewCell {
         contentView.addSubview(ageRangeLabel)
         contentView.addSubview(launchLabel)
         contentView.addSubview(dateLaunchLabel)
-        contentView.addSubview(duratioLabel)
-        contentView.addSubview(duratioMovieLabel)
+        contentView.addSubview(durationLabel)
+        contentView.addSubview(averageVoteLabel)
         contentView.addSubview(synopsisLabel)
         contentView.addSubview(synopsisMovieLabel)
     }
@@ -128,13 +128,13 @@ class MovieInformationTableViewCell: UITableViewCell {
             dateLaunchLabel.topAnchor.constraint(equalTo: launchLabel.bottomAnchor, constant: 5),
             dateLaunchLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             
-            duratioLabel.topAnchor.constraint(equalTo: dateLaunchLabel.bottomAnchor, constant: 20),
-            duratioLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            durationLabel.topAnchor.constraint(equalTo: dateLaunchLabel.bottomAnchor, constant: 20),
+            durationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
-            duratioMovieLabel.topAnchor.constraint(equalTo: duratioLabel.bottomAnchor, constant: 5),
-            duratioMovieLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            averageVoteLabel.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 5),
+            averageVoteLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             
-            synopsisLabel.topAnchor.constraint(equalTo: duratioMovieLabel.bottomAnchor, constant: 20),
+            synopsisLabel.topAnchor.constraint(equalTo: averageVoteLabel.bottomAnchor, constant: 20),
             synopsisLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
             synopsisMovieLabel.topAnchor.constraint(equalTo: synopsisLabel.bottomAnchor, constant: 5),
@@ -144,11 +144,11 @@ class MovieInformationTableViewCell: UITableViewCell {
         ])
     }
     
-    func setupCell(movie: DetailMovie) {
+    func setupCell(movie: MovieDetail) {
         movieNameLabel.text = movie.title
-        ageRangeLabel.text = String(movie.ageClassification)
-        dateLaunchLabel.text = movie.launch
-        duratioMovieLabel.text = movie.duration
-        synopsisMovieLabel.text = movie.synopsis
+        ageRangeLabel.text = "Adulto: \(movie.adult)"
+        dateLaunchLabel.text = Util.formatReleaseDate(movie.releaseDate)
+        averageVoteLabel.text = String(movie.voteAverage)
+        synopsisMovieLabel.text = movie.overview
     }
 }

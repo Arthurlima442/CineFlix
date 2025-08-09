@@ -56,7 +56,6 @@ class MovieImageTableViewCell: UITableViewCell {
     }
     
     func addElements() {
-        //  contentView.addSubview(suaView)
         contentView.addSubview(coverMovieImageView)
         contentView.addSubview(backButton)
     }
@@ -67,14 +66,15 @@ class MovieImageTableViewCell: UITableViewCell {
             coverMovieImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             coverMovieImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             coverMovieImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            coverMovieImageView.heightAnchor.constraint(equalToConstant: 300),
+            coverMovieImageView.heightAnchor.constraint(equalToConstant: 400),
             
             backButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
         ])
     }
     
-    func setupCell(movie: DetailMovie) {
-        coverMovieImageView.image = UIImage(named: movie.movieImage)
+    func setupCell(movieData: MovieDetail) {
+        guard let url = URL(string: "https://image.tmdb.org/t/p/w400\(movieData.posterPath ?? "")") else { return }
+        coverMovieImageView.loadImageFromURL(from: url, placeholder: UIImage(systemName: "star"))
     }
 }
