@@ -18,40 +18,21 @@ class RegisterScreen: UIView {
     lazy var textLabel: UILabel = {
         let text = UILabel()
         text.translatesAutoresizingMaskIntoConstraints = false
-        text.text = "CineFlix"
+        text.text = "Register"
         text.font = UIFont.systemFont(ofSize: 45)
         text.textColor = .red
         text.textAlignment = .center
         return text
     }()
     
-    lazy var titleLabel: UILabel = {
+    lazy var emailLabel: UILabel = {
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
-        title.text = "Register"
-        title.font = UIFont.boldSystemFont(ofSize: 25)
+        title.text = "Email:"
+        title.font = UIFont.boldSystemFont(ofSize: 20)
         title.textColor = .white
         title.textAlignment = .left
         return title
-    }()
-    
-    lazy var nameTextFiel: UITextField = {
-        var name = UITextField()
-        name.translatesAutoresizingMaskIntoConstraints = false
-        name.borderStyle = .roundedRect
-        name.clipsToBounds = true
-        name.layer.cornerRadius = 4
-        name.layer.borderColor = UIColor.white.cgColor
-        name.layer.borderWidth = 1
-        name.backgroundColor = .black
-        name.textColor = .white
-        name.keyboardType = .emailAddress
-        // Placeholder branco
-        name.attributedPlaceholder = NSAttributedString(
-            string: "Enter your Name:",
-            attributes: [.foregroundColor: UIColor.lightGray]
-        )
-        return name
     }()
     
     lazy var emailTextField: UITextField = {
@@ -73,6 +54,16 @@ class RegisterScreen: UIView {
         return email
     }()
     
+    lazy var passwordLabel: UILabel = {
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.text = "Password:"
+        title.font = UIFont.boldSystemFont(ofSize: 20)
+        title.textColor = .white
+        title.textAlignment = .left
+        return title
+    }()
+    
     lazy var passwordTextField: UITextField = {
         let password = UITextField()
         password.translatesAutoresizingMaskIntoConstraints = false
@@ -91,6 +82,16 @@ class RegisterScreen: UIView {
             attributes: [.foregroundColor: UIColor.lightGray]
         )
         return password
+    }()
+    
+    lazy var confirmPasswordLabel: UILabel = {
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.text = "Confirm Password:"
+        title.font = UIFont.boldSystemFont(ofSize: 20)
+        title.textColor = .white
+        title.textAlignment = .left
+        return title
     }()
     
     lazy var confirmPasswordTextField: UITextField = {
@@ -118,9 +119,14 @@ class RegisterScreen: UIView {
         confirm.translatesAutoresizingMaskIntoConstraints = false
         confirm.setTitle("Confirm", for: .normal)
         confirm.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        confirm.backgroundColor = .red
+        confirm.setTitleColor(.white, for: .normal)
+        confirm.backgroundColor = UIColor(red: 0.7, green: 0.0, blue: 0.1, alpha: 1.0)
         confirm.clipsToBounds = true
-        confirm.layer.cornerRadius = 8
+        confirm.layer.cornerRadius = 10
+        confirm.layer.shadowColor = UIColor.black.cgColor
+        confirm.layer.shadowOpacity = 0.5
+        confirm.layer.shadowOffset = CGSize(width: 0, height: 4)
+        confirm.layer.shadowRadius = 8
         confirm.addTarget(self, action: #selector(tappedConfirmButton), for: .touchUpInside)
         confirm.setTitleColor(.white, for: .normal)
         return confirm
@@ -142,11 +148,12 @@ class RegisterScreen: UIView {
     }
     
     func addElements() {
-        addSubview(titleLabel)
         addSubview(textLabel)
-        addSubview(nameTextFiel)
+        addSubview(emailLabel)
         addSubview(emailTextField)
+        addSubview(passwordLabel)
         addSubview(passwordTextField)
+        addSubview(confirmPasswordLabel)
         addSubview(confirmPasswordTextField)
         addSubview(confirmButton)
     }
@@ -157,26 +164,29 @@ class RegisterScreen: UIView {
             textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
-            titleLabel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 30),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            emailLabel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 20),
+            emailLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            emailLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
-            nameTextFiel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            nameTextFiel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            nameTextFiel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            nameTextFiel.heightAnchor.constraint(equalToConstant: 40),
-            
-            emailTextField.topAnchor.constraint(equalTo: nameTextFiel.bottomAnchor, constant: 20),
+            emailTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 5),
             emailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             emailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             emailTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
+            passwordLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
+            passwordLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            passwordLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            
+            passwordTextField.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 5),
             passwordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             passwordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             passwordTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            confirmPasswordTextField.topAnchor.constraint(equalTo:passwordTextField.bottomAnchor, constant: 20),
+            confirmPasswordLabel.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 20),
+            confirmPasswordLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            confirmPasswordLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            
+            confirmPasswordTextField.topAnchor.constraint(equalTo:confirmPasswordLabel.bottomAnchor, constant: 5),
             confirmPasswordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             confirmPasswordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             confirmPasswordTextField.heightAnchor.constraint(equalToConstant: 40),

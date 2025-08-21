@@ -62,7 +62,7 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
-        label.text = "Avaliação:"
+        label.text = "IMDb:"
         label.textAlignment = .left
         label.textColor = .white
         return label

@@ -1,16 +1,12 @@
 //
-//  S.swift
+//  SettingsScreen.swift
 //  CineFlix
 //
 //  Created by Arthur Lima on 21/08/25.
 //
 
-import UIKit
 
-protocol SettingsScreenProtocol: AnyObject {
-    func tappedExitAppButton()
-    func tappedDeleteAccontButton()
-}
+import UIKit
 
 class SettingsScreen: UIView {
     
@@ -126,26 +122,34 @@ class SettingsScreen: UIView {
     lazy var exitAppButton: UIButton = {
         let exit = UIButton()
         exit.setTitle("Exit the App", for: .normal)
-        exit.setTitleColor(.white, for: .normal)
-        exit.backgroundColor = .red
         exit.translatesAutoresizingMaskIntoConstraints = false
-        exit.addTarget(self, action: #selector(tappedExitAppButton), for: .touchUpInside)
-        exit.clipsToBounds = true
         exit.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        exit.layer.cornerRadius = 8
+        exit.setTitleColor(.white, for: .normal)
+        exit.backgroundColor = UIColor(red: 0.7, green: 0.0, blue: 0.1, alpha: 1.0)
+        exit.clipsToBounds = true
+        exit.layer.cornerRadius = 10
+        exit.layer.shadowColor = UIColor.black.cgColor
+        exit.layer.shadowOpacity = 0.5
+        exit.layer.shadowOffset = CGSize(width: 0, height: 4)
+        exit.layer.shadowRadius = 8
+        exit.addTarget(self, action: #selector(tappedExitAppButton), for: .touchUpInside)
         return exit
     }()
     
     lazy var deleteAccontButton: UIButton = {
         let delete = UIButton()
         delete.setTitle("Delete Accont", for: .normal)
-        delete.setTitleColor(.white, for: .normal)
-        delete.backgroundColor = .red
         delete.translatesAutoresizingMaskIntoConstraints = false
-        delete.addTarget(self, action: #selector(tappedDeleteAccontButton), for: .touchUpInside)
-        delete.clipsToBounds = true
         delete.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        delete.layer.cornerRadius = 8
+        delete.setTitleColor(.white, for: .normal)
+        delete.backgroundColor = UIColor(red: 0.7, green: 0.0, blue: 0.1, alpha: 1.0)
+        delete.clipsToBounds = true
+        delete.layer.cornerRadius = 10
+        delete.layer.shadowColor = UIColor.black.cgColor
+        delete.layer.shadowOpacity = 0.5
+        delete.layer.shadowOffset = CGSize(width: 0, height: 4)
+        delete.layer.shadowRadius = 8
+        delete.addTarget(self, action: #selector(tappedDeleteAccontButton), for: .touchUpInside)
         return delete
     }()
     
@@ -183,7 +187,7 @@ class SettingsScreen: UIView {
     
     func configConstraints() {
         NSLayoutConstraint.activate([
-            textLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
+            textLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             textLabel.leadingAnchor.constraint(equalTo: leadingAnchor , constant: 20),
             textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             textLabel.heightAnchor.constraint(equalToConstant: 40),

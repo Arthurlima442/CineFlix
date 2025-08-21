@@ -16,6 +16,15 @@ class ChooseSignInScreen: UIView {
     
     weak var delegate: ChooseSignInScreenProtocol?
     
+    private lazy var backgroundImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.contentMode = .scaleAspectFill
+        iv.backgroundColor = .black
+        iv.clipsToBounds = true
+        return iv
+    }()
+    
     lazy var titleLabel: UILabel = {
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -28,7 +37,7 @@ class ChooseSignInScreen: UIView {
     lazy var messageLabel: UILabel = {
         let message = UILabel()
         message.translatesAutoresizingMaskIntoConstraints = false
-        message.text = "Discover the perfect movie."
+        message.text = "Discover the perfect movie!"
         message.font = UIFont.systemFont(ofSize: 25)
         message.textAlignment = .center
         message.textColor = .white
@@ -41,9 +50,13 @@ class ChooseSignInScreen: UIView {
         button.setTitle("Login", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .red
+        button.backgroundColor = UIColor(red: 0.7, green: 0.0, blue: 0.1, alpha: 1.0)
         button.clipsToBounds = true
-        button.layer.cornerRadius = 5
+        button.layer.cornerRadius = 10
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowRadius = 8
         button.addTarget(self, action: #selector(tappedLoginButton), for: .touchUpInside)
         return button
     }()
@@ -54,9 +67,14 @@ class ChooseSignInScreen: UIView {
         register.setTitle("Register", for: .normal)
         register.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         register.setTitleColor(.white, for: .normal)
+        register.backgroundColor = UIColor(red: 0.7, green: 0.0, blue: 0.1, alpha: 1.0)
+        register.clipsToBounds = true
+        register.layer.cornerRadius = 10
+        register.layer.shadowColor = UIColor.black.cgColor
+        register.layer.shadowOpacity = 0.5
+        register.layer.shadowOffset = CGSize(width: 0, height: 4)
+        register.layer.shadowRadius = 8
         register.addTarget(self, action: #selector(tappedRegisterButton), for: .touchUpInside)
-        register.backgroundColor = .red
-        register.layer.cornerRadius = 5
         return register
     }()
     
@@ -70,9 +88,9 @@ class ChooseSignInScreen: UIView {
     
     init() {
         super.init(frame: .zero)
-        backgroundColor = .black
         addElements()
         configConstraints()
+        backgroundImageView.image = UIImage(named: "fundoTelaPrincipal")
     }
     
     required init?(coder: NSCoder) {
@@ -80,6 +98,7 @@ class ChooseSignInScreen: UIView {
     }
     
     func addElements() {
+        addSubview(backgroundImageView)
         addSubview(titleLabel)
         addSubview(messageLabel)
         addSubview(registerButton)
@@ -88,20 +107,29 @@ class ChooseSignInScreen: UIView {
     
     func configConstraints() {
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 90),
+            backgroundImageView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 140),
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
-            loginButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -50),
-            loginButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            loginButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            // Login (esquerda)
+            loginButton.topAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 40),
+            loginButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
+            loginButton.heightAnchor.constraint(equalToConstant: 50),
             
-            registerButton.bottomAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: -55),
-            registerButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            registerButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            // Register (direita)
+            registerButton.topAnchor.constraint(equalTo: loginButton.topAnchor),
+            registerButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
+            registerButton.heightAnchor.constraint(equalTo: loginButton.heightAnchor),
+            registerButton.leadingAnchor.constraint(equalTo: loginButton.trailingAnchor, constant: 16),
+            registerButton.widthAnchor.constraint(equalTo: loginButton.widthAnchor)
         ])
     }
 }

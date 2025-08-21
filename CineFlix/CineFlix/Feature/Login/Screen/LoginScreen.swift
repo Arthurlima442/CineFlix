@@ -19,18 +19,28 @@ class LoginScreen: UIView {
     lazy var textLabel: UILabel = {
         let text = UILabel()
         text.translatesAutoresizingMaskIntoConstraints = false
-        text.text = "CineFlix"
+        text.text = "Login"
         text.font = UIFont.systemFont(ofSize: 45)
         text.textColor = .red
         text.textAlignment = .center
         return text
     }()
     
-    lazy var titleLabel: UILabel = {
+    lazy var emailLabel: UILabel = {
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
-        title.text = "Login"
-        title.font = UIFont.boldSystemFont(ofSize: 25)
+        title.text = "Email:"
+        title.font = UIFont.boldSystemFont(ofSize: 20)
+        title.textColor = .white
+        title.textAlignment = .left
+        return title
+    }()
+    
+    lazy var passwordLabel: UILabel = {
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.text = "Password:"
+        title.font = UIFont.boldSystemFont(ofSize: 20)
         title.textColor = .white
         title.textAlignment = .left
         return title
@@ -94,9 +104,14 @@ class LoginScreen: UIView {
         confirm.setTitle("Confirm", for: .normal)
         confirm.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         confirm.setTitleColor(.white, for: .normal)
-        confirm.backgroundColor = .red
+        confirm.backgroundColor = UIColor(red: 0.7, green: 0.0, blue: 0.1, alpha: 1.0)
+        confirm.clipsToBounds = true
+        confirm.layer.cornerRadius = 10
+        confirm.layer.shadowColor = UIColor.black.cgColor
+        confirm.layer.shadowOpacity = 0.5
+        confirm.layer.shadowOffset = CGSize(width: 0, height: 4)
+        confirm.layer.shadowRadius = 8
         confirm.addTarget(self, action: #selector(tappedConfirmButton), for: .touchUpInside)
-        confirm.layer.cornerRadius = 8
         return confirm
     }()
     
@@ -135,7 +150,8 @@ class LoginScreen: UIView {
     
     func addElements() {
         addSubview(textLabel)
-        addSubview(titleLabel)
+        addSubview(emailLabel)
+        addSubview(passwordLabel)
         addSubview(emailTextField)
         addSubview(passwordTextField)
         addSubview(forgotPasswordButton)
@@ -149,16 +165,20 @@ class LoginScreen: UIView {
             textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
-            titleLabel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 30),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            emailLabel.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 30),
+            emailLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            emailLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
-            emailTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            emailTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 10),
             emailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             emailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             emailTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
+            passwordLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
+            passwordLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            passwordLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            
+            passwordTextField.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 10),
             passwordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             passwordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             passwordTextField.heightAnchor.constraint(equalToConstant: 40),
