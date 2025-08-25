@@ -54,6 +54,7 @@ class HomeService {
 
         do {
           let object = try JSONDecoder().decode(MovieList.self, from: data)
+//            completion(.success(object))
           completion(.success(object.results ?? []))
         } catch {
           completion(.failure(error))

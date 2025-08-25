@@ -7,14 +7,8 @@
 
 import UIKit
 
-protocol MovieImageTableViewCellProtocol: AnyObject {
-    func tappedBackButton()
-}
-
 class MovieImageTableViewCell: UITableViewCell {
-    
-    weak var delegate: MovieImageTableViewCellProtocol?
-    
+
     static let identifier: String = String(describing: MovieImageTableViewCell.self)
     
     lazy var coverMovieImageView: UIImageView = {
@@ -23,26 +17,6 @@ class MovieImageTableViewCell: UITableViewCell {
         imageView.contentMode = .scaleToFill
         return imageView
     }()
-    
-    lazy var backButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Ícone de seta (arrow.left)
-        let image = UIImage(systemName:"arrow.left")?.withRenderingMode(.alwaysTemplate)
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        
-        // Estilo visual
-        button.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(tappedBackButton), for: .touchUpInside)
-        return button
-    }()
-    
-    @objc func tappedBackButton() {
-        delegate?.tappedBackButton()
-    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -57,7 +31,6 @@ class MovieImageTableViewCell: UITableViewCell {
     
     func addElements() {
         contentView.addSubview(coverMovieImageView)
-        contentView.addSubview(backButton)
     }
     
     func configConstraints() {
@@ -67,9 +40,6 @@ class MovieImageTableViewCell: UITableViewCell {
             coverMovieImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             coverMovieImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             coverMovieImageView.heightAnchor.constraint(equalToConstant: 400),
-            
-            backButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
         ])
     }
     

@@ -30,11 +30,23 @@ class MovieDetailViewController: UIViewController {
         configViewModel()
         configNavigation()
         fetchRequest()
+        nameBackBotton()
     }
     
     func configNavigation() {
-        // Esconder botao padrao de voltar
-        navigationController?.isNavigationBarHidden = true
+        navigationController?.isNavigationBarHidden = false
+
+        let ap = UINavigationBarAppearance()
+        ap.configureWithOpaqueBackground()
+        ap.backgroundColor = .black // ou a cor que quiser
+
+        navigationItem.standardAppearance = ap
+        navigationItem.scrollEdgeAppearance = ap   // <- mesma aparência no scroll
+        navigationController?.navigationBar.isTranslucent = false
+    }
+    
+    func nameBackBotton() {
+        navigationItem.backButtonTitle = "Voltar"
     }
     
     func configTableView() {
@@ -59,7 +71,6 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: MovieImageTableViewCell.identifier, for: indexPath) as? MovieImageTableViewCell
-            cell?.delegate = self
 
             guard let movieDetail = viewModel.getMovieDetail else { return UITableViewCell() }
             cell?.setupCell(movieData: movieDetail)
@@ -88,11 +99,5 @@ extension MovieDetailViewController: MovieDetailViewModelProtocol {
     
     func failure() {
         configTableView()
-    }
-}
-
-extension MovieDetailViewController: MovieImageTableViewCellProtocol {
-    func tappedBackButton() {
-        navigationController?.popViewController(animated: true)
     }
 }

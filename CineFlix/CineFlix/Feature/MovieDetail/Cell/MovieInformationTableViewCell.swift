@@ -16,6 +16,27 @@ class MovieInformationTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 30, weight: .medium)
         label.textAlignment = .center
+        label.numberOfLines = 0
+        label.textColor = .white
+        return label
+    }()
+    
+    lazy var genresTitleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
+        label.text = "Gêneros:"
+        label.textAlignment = .left
+        label.textColor = .white
+        return label
+    }()
+    
+    lazy var genresValueLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        label.textAlignment = .left
+        label.numberOfLines = 0
         label.textColor = .white
         return label
     }()
@@ -112,6 +133,8 @@ class MovieInformationTableViewCell: UITableViewCell {
     func addElements() {
         //  contentView.addSubview(suaView)
         contentView.addSubview(movieNameLabel)
+        contentView.addSubview(genresTitleLabel)
+        contentView.addSubview(genresValueLabel)
         contentView.addSubview(durationLabel)
         contentView.addSubview(durationMovieLabel)
         contentView.addSubview(launchLabel)
@@ -128,7 +151,14 @@ class MovieInformationTableViewCell: UITableViewCell {
             movieNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             movieNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
-            launchLabel.topAnchor.constraint(equalTo: movieNameLabel.bottomAnchor, constant: 20),
+            genresTitleLabel.topAnchor.constraint(equalTo: movieNameLabel.bottomAnchor, constant: 20),
+            genresTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            
+            genresValueLabel.topAnchor.constraint(equalTo: genresTitleLabel.bottomAnchor, constant: 5),
+            genresValueLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            genresValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            
+            launchLabel.topAnchor.constraint(equalTo: genresValueLabel.bottomAnchor, constant: 20),
             launchLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
             dateLaunchLabel.topAnchor.constraint(equalTo: launchLabel.bottomAnchor, constant: 5),
@@ -161,7 +191,8 @@ class MovieInformationTableViewCell: UITableViewCell {
         movieNameLabel.text = movie.title
         durationMovieLabel.text = String("\(movie.runtime ?? 0) Minutos")
         dateLaunchLabel.text = Util.formatReleaseDate(movie.releaseDate)
-        averageVoteLabel.text = String(movie.voteAverage)
+        averageVoteLabel.text = String("\(movie.voteAverage) / 10.0")
         synopsisMovieLabel.text = movie.overview
+        genresValueLabel.text = movie.genres.map { $0.name }.joined(separator: ", ")
     }
 }

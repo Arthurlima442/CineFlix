@@ -12,6 +12,7 @@ class HomeViewController: UIViewController {
     private let transitionDelegate = LeftSideTransitioningDelegate()
     var screen: HomeMovieScreen?
     private var viewModel: HomeViewModel = HomeViewModel()
+    var movies: [MovieSummary] = []
     
     override func loadView() {
         screen = HomeMovieScreen()
@@ -35,11 +36,17 @@ class HomeViewController: UIViewController {
     
     func titleNav() {
         title = "CineFlix"
-        navigationController?.isNavigationBarHidden = false
-        navigationController?.navigationBar.titleTextAttributes = [
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .black  // cor do fundo da Home
+        appearance.titleTextAttributes = [
             .foregroundColor: UIColor.red,
             .font: UIFont.systemFont(ofSize: 35, weight: .bold)
         ]
+        
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.isTranslucent = false
     }
     
     func configSearch() {
@@ -112,6 +119,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let movie = viewModel.loudCurrentMovieSection(indexPath: indexPath)
         navigationController?.pushViewController(MovieDetailViewController(idMovie: movie.id), animated: true)
+        navigationItem.backButtonTitle = "Voltar"
     }
 }
 
