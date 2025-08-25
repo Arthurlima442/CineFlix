@@ -8,7 +8,7 @@
 import Foundation
 
 enum MovieGenre: String, CaseIterable {
-    case all = "Todos"
+    case all = "Populares"
     case action = "Ação"
     case adventure = "Aventura"
     case animation = "Animação"

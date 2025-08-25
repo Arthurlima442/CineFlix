@@ -24,7 +24,7 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
-        label.text = "Launch in:"
+        label.text = "Lançamento:"
         label.textAlignment = .left
         label.textColor = .white
         return label
@@ -42,7 +42,7 @@ class MovieInformationTableViewCell: UITableViewCell {
     lazy var durationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Duration:"
+        label.text = "Duração:"
         label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
         label.textAlignment = .right
         label.textColor = .white
@@ -81,7 +81,7 @@ class MovieInformationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
-        label.text = "Synopsis:"
+        label.text = "Sinopse:"
         label.textAlignment = .left
         label.textColor = .white
         return label
@@ -122,8 +122,6 @@ class MovieInformationTableViewCell: UITableViewCell {
         contentView.addSubview(synopsisMovieLabel)
     }
     
-    // colocar no ultimo elemento mais proximo da borda inferior
-    // .bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
     func configConstraints() {
         NSLayoutConstraint.activate([
             movieNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),

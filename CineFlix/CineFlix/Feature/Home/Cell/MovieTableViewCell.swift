@@ -23,7 +23,7 @@ class MovieTableViewCell: UITableViewCell {
     
     lazy var nameMovieLabel: UILabel = {
         let name = UILabel()
-        name.font = .systemFont(ofSize: 20, weight: .semibold)
+        name.font = .systemFont(ofSize: 15, weight: .semibold)
         name.textColor = .white
         name.numberOfLines = 2
         name.translatesAutoresizingMaskIntoConstraints = false
@@ -32,10 +32,19 @@ class MovieTableViewCell: UITableViewCell {
     
     lazy var launchMovieLabel: UILabel = {
         let launch = UILabel()
-        launch.font = .systemFont(ofSize: 20, weight: .semibold)
+        launch.font = .systemFont(ofSize: 15, weight: .semibold)
         launch.textColor = .white
         launch.translatesAutoresizingMaskIntoConstraints = false
         return launch
+    }()
+    
+    lazy var genreMovieLabel: UILabel = {
+        let genre = UILabel()
+        genre.font = .systemFont(ofSize: 15, weight: .semibold)
+        genre.textColor = .white
+        genre.numberOfLines = 2
+        genre.translatesAutoresizingMaskIntoConstraints = false
+       return genre
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -54,6 +63,7 @@ class MovieTableViewCell: UITableViewCell {
         contentView.addSubview(movieImageView)
         contentView.addSubview(nameMovieLabel)
         contentView.addSubview(launchMovieLabel)
+        contentView.addSubview(genreMovieLabel)
     }
     
     func configConstraints() {
@@ -72,6 +82,10 @@ class MovieTableViewCell: UITableViewCell {
             launchMovieLabel.leadingAnchor.constraint(equalTo: movieImageView.trailingAnchor, constant: 10),
             launchMovieLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             
+            genreMovieLabel.topAnchor.constraint(equalTo: launchMovieLabel.bottomAnchor, constant: 10),
+            genreMovieLabel.leadingAnchor.constraint(equalTo: movieImageView.trailingAnchor, constant: 10),
+            genreMovieLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+
         ])
     }
     
@@ -80,5 +94,10 @@ class MovieTableViewCell: UITableViewCell {
         movieImageView.loadImageFromURL(from: url, placeholder: UIImage(systemName: "hourglass"))
         nameMovieLabel.text = movieData.title ?? ""
         launchMovieLabel.text = Util.formatReleaseDate(movieData.releaseDate)
+        let genreMap = Dictionary(uniqueKeysWithValues: MovieGenre.allCases.map { ($0.id, $0.rawValue) })
+            genreMovieLabel.text = movieData.genreIDS?
+                .compactMap { genreMap[$0] }
+                .joined(separator: ", ")
+                ?? "—"
     }
 }

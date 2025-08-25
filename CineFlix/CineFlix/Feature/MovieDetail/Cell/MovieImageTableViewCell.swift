@@ -75,6 +75,6 @@ class MovieImageTableViewCell: UITableViewCell {
     
     func setupCell(movieData: MovieDetail) {
         guard let url = URL(string: "https://image.tmdb.org/t/p/w400\(movieData.posterPath ?? "")") else { return }
-        coverMovieImageView.loadImageFromURL(from: url, placeholder: UIImage(systemName: "star"))
+        coverMovieImageView.loadImageFromURL(from: url, placeholder: UIImage(systemName: "gobackward"))
     }
 }
