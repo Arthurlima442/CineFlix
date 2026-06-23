@@ -16,9 +16,10 @@ class TabBarController: UITabBarController {
     
     private func setupTabBar() {
         let home = createNavController(viewController: HomeViewController(), title: "Home", imageName: "house", selectedImage: "house.fill")
+        let series = createNavController(viewController: SeriesViewController(), title: "Series", imageName: "tv", selectedImage: "tv.fill")
         let settings = createNavController(viewController: SettingsViewController(), title: "Config", imageName: "gear", selectedImage: "gearshape.fill")
         
-        viewControllers = [home, settings]
+        viewControllers = [home, series, settings]
     }
     
     private func createNavController(viewController: UIViewController, title: String, imageName: String, selectedImage: String) -> UINavigationController {
