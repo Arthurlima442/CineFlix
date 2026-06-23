@@ -1,8 +1,8 @@
 import UIKit
 
-class SeriesCollectionViewCell: UICollectionViewCell {
+class MoviePosterCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "SeriesCollectionViewCell"
+    static let identifier = "MoviePosterCollectionViewCell"
     
     private let posterImageView = UIImageView()
     private let titleLabel = UILabel()
@@ -87,12 +87,18 @@ class SeriesCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Configuration
     
-    func configure(with series: SeriesSummary) {
-        titleLabel.text = series.name
-        ratingLabel.text = "⭐ \(String(format: "%.1f", series.voteAverage))"
+    func configure(with movie: MovieSummary) {
+        titleLabel.text = movie.title
+        
+        // Handle optional voteAverage
+        if let voteAverage = movie.voteAverage {
+            ratingLabel.text = "⭐ \(String(format: "%.1f", voteAverage))"
+        } else {
+            ratingLabel.text = "⭐ -"
+        }
         
         // Load poster image
-        if let posterPath = series.posterPath {
+        if let posterPath = movie.posterPath {
             let imageURL = URL(string: "https://image.tmdb.org/t/p/w200\(posterPath)")
             posterImageView.loadImageFromURL(from: imageURL!, placeholder: UIImage(systemName: "hourglass"))
         } else {

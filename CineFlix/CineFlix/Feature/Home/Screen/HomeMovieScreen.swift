@@ -67,6 +67,7 @@ class HomeMovieScreen: UIView {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: MovieTableViewCell.identifier)
+        tableView.register(MovieSectionTableViewCell.self, forCellReuseIdentifier: MovieSectionTableViewCell.identifier)
         tableView.register(ErrorTableViewCell.self, forCellReuseIdentifier: ErrorTableViewCell.identifier)
         tableView.register(EmptyTableViewCell.self, forCellReuseIdentifier: EmptyTableViewCell.identifier)
         tableView.backgroundColor = .black

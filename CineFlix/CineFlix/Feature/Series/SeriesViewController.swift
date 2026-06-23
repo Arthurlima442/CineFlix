@@ -38,7 +38,7 @@ class SeriesViewController: UIViewController {
     
     private func setupInitialSections() {
         viewModel.setupInitialSections()
-        viewModel.loadAllSections()
+        viewModel.loadMainSectionsOnly()
     }
     
     func titleNav() {
@@ -172,6 +172,23 @@ extension SeriesViewController: SeriesCategoryMenuViewControllerProtocol {
         // Reset completo da TableView para garantir layout organizado
         screen?.tableView.setContentOffset(.zero, animated: false)
         screen?.tableView.reloadData()
+    }
+}
+
+extension SeriesViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Load genre sections on demand as user scrolls vertically
+        guard let tableView = screen?.tableView else { return }
+        
+        let visibleIndexPaths = tableView.indexPathsForVisibleRows ?? []
+        for indexPath in visibleIndexPaths {
+            let sectionIndex = indexPath.section
+            
+            // Load genre sections (index >= 3) on demand
+            if sectionIndex >= 3 && sectionIndex < viewModel.numberOfSections() {
+                viewModel.loadSectionIfNeeded(at: sectionIndex)
+            }
+        }
     }
 }
 

@@ -28,6 +28,57 @@ class HomeService {
     }
   }
 
+  /// Busca filmes melhor avaliados com suporte a paginação
+  /// - Parameters:
+  ///   - page: Número da página (padrão: 1)
+  ///   - completion: Closure com resultado contendo lista de filmes e metadados
+  func fetchTopRatedMovies(page: Int = 1, completion: @escaping (Result<MovieList, Error>) -> Void) {
+    let urlString = "https://api.themoviedb.org/3/movie/top_rated?api_key=\(apiKey)&language=pt-BR&page=\(page)"
+    
+    NetworkService.request(urlString: urlString) { (result: Result<MovieList, Error>) in
+      switch result {
+      case .success(let movieList):
+        completion(.success(movieList))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  /// Busca filmes em cartaz com suporte a paginação
+  /// - Parameters:
+  ///   - page: Número da página (padrão: 1)
+  ///   - completion: Closure com resultado contendo lista de filmes e metadados
+  func fetchNowPlayingMovies(page: Int = 1, completion: @escaping (Result<MovieList, Error>) -> Void) {
+    let urlString = "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)&language=pt-BR&page=\(page)"
+    
+    NetworkService.request(urlString: urlString) { (result: Result<MovieList, Error>) in
+      switch result {
+      case .success(let movieList):
+        completion(.success(movieList))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  /// Busca filmes lançamentos futuros com suporte a paginação
+  /// - Parameters:
+  ///   - page: Número da página (padrão: 1)
+  ///   - completion: Closure com resultado contendo lista de filmes e metadados
+  func fetchUpcomingMovies(page: Int = 1, completion: @escaping (Result<MovieList, Error>) -> Void) {
+    let urlString = "https://api.themoviedb.org/3/movie/upcoming?api_key=\(apiKey)&language=pt-BR&page=\(page)"
+    
+    NetworkService.request(urlString: urlString) { (result: Result<MovieList, Error>) in
+      switch result {
+      case .success(let movieList):
+        completion(.success(movieList))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
   /// Busca filmes por gênero com suporte a paginação
   /// - Parameters:
   ///   - genre: Gênero de filme

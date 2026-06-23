@@ -48,6 +48,39 @@ class SeriesViewModel {
     
     // MARK: - Carregamento
     
+    /// Carrega apenas as 3 seções principais (performance optimization)
+    /// As demais seções (gêneros) são carregadas sob demanda
+    func loadMainSectionsOnly() {
+        // Carrega apenas as 3 seções principais
+        let mainSectionIndices = [0, 1, 2]
+        loadSelectedSections(mainSectionIndices)
+    }
+    
+    /// Carrega um conjunto específico de seções
+    private func loadSelectedSections(_ indices: [Int]) {
+        guard !isLoadingAllSections else { return }
+        
+        isLoadingAllSections = true
+        delegate?.startLoading()
+        
+        var loadedCount = 0
+        let totalSections = indices.count
+        
+        for index in indices {
+            loadSectionData(at: index) { [weak self] in
+                loadedCount += 1
+                
+                if loadedCount == totalSections {
+                    self?.isLoadingAllSections = false
+                    DispatchQueue.main.async {
+                        self?.delegate?.stopLoading()
+                        self?.delegate?.success()
+                    }
+                }
+            }
+        }
+    }
+
     /// Carrega dados para todas as seções (lazy loading)
     func loadAllSections() {
         guard !isLoadingAllSections else { return }
@@ -213,6 +246,19 @@ class SeriesViewModel {
     func resetToAllCategories() {
         setupInitialSections()
         loadAllSections()
+    }
+    
+    /// Carrega uma seção sob demanda (lazy loading para gêneros)
+    /// Só carrega se ainda não foi carregada
+    func loadSectionIfNeeded(at index: Int) {
+        guard index >= 0, index < sections.count else { return }
+        
+        let section = sections[index]
+        
+        // Só carrega se seção está vazia e não é das 3 principais
+        if section.series.isEmpty && index >= 3 {
+            loadSectionData(at: index)
+        }
     }
     
     // MARK: - Busca

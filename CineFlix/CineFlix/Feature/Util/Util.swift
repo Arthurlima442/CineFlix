@@ -30,3 +30,10 @@ final class Util {
         return displayFormatter.string(from: date)
     }
 }
+
+extension Array {
+    /// Safe subscript to avoid out of bounds access
+    subscript(safe index: Int) -> Element? {
+        return index >= 0 && index < count ? self[index] : nil
+    }
+}

@@ -13,7 +13,7 @@ class ImageCache {
   private let cacheQueue = DispatchQueue(label: "ImageCache.ioQueue") // Fila para operações seguras
 
   private init() {
-    cache.countLimit = 1000 // Limite padrão de objetos no cache
+    cache.countLimit = 100 // Limite otimizado para performance
   }
 
   /// Limpa todas as imagens armazenadas no cache de forma assíncrona

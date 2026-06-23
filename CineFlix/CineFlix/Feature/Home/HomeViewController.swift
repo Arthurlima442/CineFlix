@@ -30,14 +30,17 @@ class HomeViewController: UIViewController {
         configScreen()
         configTableView()
         configViewModel()
-        viewModel.fetchPopularMovie()
+        
+        // Load initial sections and data (optimized: load only 4 main sections)
+        viewModel.setupInitialSections()
+        viewModel.loadMainSectionsOnly()
     }
     
     func titleNav() {
-        title = "CineFlix"
+        title = "Filmes"
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .black  // cor do fundo da Home
+        appearance.backgroundColor = .black
         appearance.titleTextAttributes = [
             .foregroundColor: UIColor.red,
             .font: UIFont.systemFont(ofSize: 35, weight: .bold)
@@ -62,14 +65,13 @@ class HomeViewController: UIViewController {
     
     func configTableView() {
         screen?.configTableViewProtocols(delegate: self, dataSource: self)
-        // Detectar scroll para implementar carregamento infinito
         screen?.tableView.delegate = self
     }
 }
 
 extension HomeViewController: HomeMovieScreenProtocol {
     func tappedPresentCategoryMenu() {
-        let categoryVC = CategoryMenuViewController(genre: viewModel.movieGenre)
+        let categoryVC = CategoryMenuViewController()
         categoryVC.delegate = self
         categoryVC.modalPresentationStyle = .custom
         categoryVC.transitioningDelegate = transitionDelegate
@@ -87,46 +89,80 @@ extension HomeViewController: HomeViewModelProtocol {
     }
     
     func startLoading() {
-        // start
+        // Could show loading indicator here
     }
     
     func stopLoading() {
-        // stop
+        // Could hide loading indicator here
     }
 }
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfNames()
+        return viewModel.numberOfSections()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 320
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if viewModel.isError {
-            let cell = tableView.dequeueReusableCell(withIdentifier: ErrorTableViewCell.identifier, for: indexPath) as? ErrorTableViewCell
-            cell?.setupCell(message: "Infelizmente tivemos um erro, tente novamente mais tarde")
-            return cell ?? UITableViewCell()
-        } else if viewModel.isNamesEmpty {
+        let sectionIndex = indexPath.row
+        
+        // If searching
+        if viewModel.numberOfSections() == 1 && viewModel.searchResults.isEmpty {
             let cell = tableView.dequeueReusableCell(withIdentifier: EmptyTableViewCell.identifier, for: indexPath) as? EmptyTableViewCell
             cell?.setupCell(message: "Não encontramos nenhum filme")
             return cell ?? UITableViewCell()
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieTableViewCell.identifier, for: indexPath) as? MovieTableViewCell else {
+        }
+        
+        // If searching and has results
+        if viewModel.numberOfSections() == 1 {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieSectionTableViewCell.identifier, for: indexPath) as? MovieSectionTableViewCell else {
                 return UITableViewCell()
             }
-            cell.setupCell(movieData: viewModel.loudCurrentMovieSection(indexPath: indexPath))
+            
+            // Create a temporary section for search results
+            var searchSection = MovieSection(title: "Resultados", type: .popular)
+            searchSection.movies = viewModel.searchResults
+            
+            cell.configure(with: searchSection, sectionIndex: sectionIndex)
+            cell.delegate = self
+            
             return cell
         }
+        
+        // Normal multi-section view
+        if let section = viewModel.getSection(at: sectionIndex) {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieSectionTableViewCell.identifier, for: indexPath) as? MovieSectionTableViewCell else {
+                return UITableViewCell()
+            }
+            
+            cell.configure(with: section, sectionIndex: sectionIndex)
+            cell.delegate = self
+            
+            return cell
+        }
+        
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let movie = viewModel.loudCurrentMovieSection(indexPath: indexPath)
-        navigationController?.pushViewController(MovieDetailViewController(idMovie: movie.id), animated: true)
-        navigationItem.backButtonTitle = "Voltar"
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
 extension HomeViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        viewModel.searchMovie(movie: searchText)
+        if searchText.isEmpty {
+            viewModel.searchMovies(query: "")
+        } else {
+            viewModel.searchMovies(query: searchText)
+        }
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -136,24 +172,46 @@ extension HomeViewController: UISearchBarDelegate {
 
 extension HomeViewController: CategoryMenuViewControllerProtocol {
     func selectCategory(genreItem: GenreItem) {
-        viewModel.fetchGenre(genre: genreItem)
-        
+        viewModel.filterByGenre(genreItem.genre)
     }
 }
 
 extension HomeViewController: UIScrollViewDelegate {
-    /// Detecta quando o usuário fez scroll perto do final da TableView
-    /// e carrega a próxima página de filmes (scroll infinito)
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
-        let frameHeight = scrollView.frame.size.height
+        // Load genre sections on demand as user scrolls vertically
+        guard let tableView = screen?.tableView else { return }
         
-        // Se o usuário está a 200pt do final, carrega a próxima página
-        let threshold: CGFloat = 200
-        
-        if offsetY > contentHeight - frameHeight - threshold {
-            viewModel.fetchNextPage()
+        let visibleIndexPaths = tableView.indexPathsForVisibleRows ?? []
+        for indexPath in visibleIndexPaths {
+            let sectionIndex = indexPath.row
+            
+            // Load genre sections (index >= 4) on demand
+            if sectionIndex >= 4 && sectionIndex < viewModel.numberOfSections() {
+                viewModel.loadSectionIfNeeded(at: sectionIndex)
+            }
         }
+    }
+}
+
+extension HomeViewController: MovieSectionTableViewCellDelegate {
+    func movieSectionCell(_ cell: MovieSectionTableViewCell, didSelectMovieAt index: Int, sectionIndex: Int) {
+        // Determine which movie was selected
+        if viewModel.numberOfSections() == 1 {
+            // Search results
+            if let movie = viewModel.searchResults[safe: index] {
+                navigationController?.pushViewController(MovieDetailViewController(idMovie: movie.id), animated: true)
+                navigationItem.backButtonTitle = "Voltar"
+            }
+        } else {
+            // Multi-section view
+            if let movie = viewModel.getMovieInSection(sectionIndex, row: index) {
+                navigationController?.pushViewController(MovieDetailViewController(idMovie: movie.id), animated: true)
+                navigationItem.backButtonTitle = "Voltar"
+            }
+        }
+    }
+    
+    func movieSectionCell(_ cell: MovieSectionTableViewCell, shouldLoadMoreAt index: Int) {
+        viewModel.loadMoreForSection(at: index)
     }
 }

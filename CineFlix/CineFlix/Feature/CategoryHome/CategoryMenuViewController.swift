@@ -11,7 +11,7 @@ class CategoryMenuViewController: UIViewController {
     var screen: CategoryMenuScreen?
     private let viewModel: CategoryMenuViewModel
     
-    init(genre: MovieGenre) {
+    init(genre: MovieGenre = .all) {
         self.viewModel = CategoryMenuViewModel(genre: genre)
         super.init(nibName: nil, bundle: nil)
     }
