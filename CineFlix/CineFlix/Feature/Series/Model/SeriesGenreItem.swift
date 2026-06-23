@@ -8,6 +8,7 @@
 import Foundation
 
 struct SeriesGenreItem: Hashable {
-    let genre: SeriesGenre
-    var isSelected: Bool
+    let title: String
+    let genre: SeriesGenre?
+    var isSelected: Bool = false
 }

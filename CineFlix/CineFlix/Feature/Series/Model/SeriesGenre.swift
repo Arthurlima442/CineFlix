@@ -1,4 +1,3 @@
-// filepath: SeriesGenre.swift
 //
 //  SeriesGenre.swift
 //  CineFlix
