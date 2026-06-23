@@ -18,8 +18,8 @@ class SeriesCategoryMenuViewController: UIViewController {
     var screen: SeriesCategoryMenuScreen?
     private let viewModel: SeriesCategoryMenuViewModel
     
-    init(genre: SeriesGenre) {
-        self.viewModel = SeriesCategoryMenuViewModel(genre: genre)
+    init() {
+        self.viewModel = SeriesCategoryMenuViewModel()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -69,9 +69,7 @@ extension SeriesCategoryMenuViewController: UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let genreSelectedNow = viewModel.loadCurrentGenre(at: indexPath.row)
-        if genreSelectedNow.genre != viewModel.genre {
-            delegate?.selectCategory(genreItem: genreSelectedNow)
-        }
+        delegate?.selectCategory(genreItem: genreSelectedNow)
         dismiss(animated: true)
     }
 }

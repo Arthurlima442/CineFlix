@@ -18,16 +18,20 @@ class SeriesCategoryMenuViewModel {
     
     weak var delegate: SeriesCategoryMenuViewModelProtocol?
     private(set) var isError: Bool = false
-    var genre: SeriesGenre
     
-    init(genre: SeriesGenre) {
-        self.genre = genre
-    }
+    init() {}
     
-    private lazy var genreItems: [SeriesGenreItem] =
-    SeriesGenre.allCases.map {
-        SeriesGenreItem(genre: $0, isSelected: $0 == genre)
-    }
+    private lazy var genreItems: [SeriesGenreItem] = {
+        var items: [SeriesGenreItem] = [
+            SeriesGenreItem(title: "Populares", genre: nil, isSelected: false)
+        ]
+        
+        for genre in SeriesGenre.allCases {
+            items.append(SeriesGenreItem(title: genre.displayName, genre: genre, isSelected: false))
+        }
+        
+        return items
+    }()
     
     func numberOfGenre() -> Int {
         return genreItems.count
