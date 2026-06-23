@@ -12,6 +12,7 @@ class SeriesViewController: UIViewController {
     private let transitionDelegate = LeftSideTransitioningDelegate()
     var screen: SeriesScreen?
     private var viewModel: SeriesViewModel = SeriesViewModel()
+    private var loadingView: UIView?
     
     override func loadView() {
         screen = SeriesScreen()
@@ -85,19 +86,21 @@ extension SeriesViewController: SeriesScreenProtocol {
 
 extension SeriesViewController: SeriesViewModelProtocol {
     func success() {
+        stopLoadingView()
         screen?.tableView.reloadData()
     }
     
     func failure() {
+        stopLoadingView()
         screen?.tableView.reloadData()
     }
     
     func startLoading() {
-        // start loading
+        startLoadingView()
     }
     
     func stopLoading() {
-        // stop loading
+        stopLoadingView()
     }
 }
 
@@ -169,6 +172,72 @@ extension SeriesViewController: SeriesCategoryMenuViewControllerProtocol {
         // Reset completo da TableView para garantir layout organizado
         screen?.tableView.setContentOffset(.zero, animated: false)
         screen?.tableView.reloadData()
+    }
+}
+
+// MARK: - Loading Methods
+
+extension SeriesViewController {
+    private func startLoadingView() {
+        DispatchQueue.main.async {
+            guard self.loadingView == nil else { return }
+            
+            let container = UIView()
+            container.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+            container.frame = self.view.bounds
+            
+            let spinner = UIView()
+            spinner.layer.borderColor = UIColor(red: 1, green: 0.4, blue: 0.2, alpha: 1).cgColor
+            spinner.layer.borderWidth = 3
+            spinner.layer.cornerRadius = 35
+            spinner.backgroundColor = .clear
+            
+            let label = UILabel()
+            label.text = "Carregando séries..."
+            label.textColor = .white
+            label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+            label.textAlignment = .center
+            
+            container.addSubview(spinner)
+            container.addSubview(label)
+            
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            label.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                spinner.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                spinner.centerYAnchor.constraint(equalTo: container.centerYAnchor, constant: -30),
+                spinner.widthAnchor.constraint(equalToConstant: 70),
+                spinner.heightAnchor.constraint(equalToConstant: 70),
+                
+                label.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 20),
+                label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+                label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20)
+            ])
+            
+            let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
+            rotation.toValue = CGFloat.pi * 2
+            rotation.duration = 1.5
+            rotation.timingFunction = CAMediaTimingFunction(name: .linear)
+            rotation.repeatCount = .infinity
+            spinner.layer.add(rotation, forKey: "rotation")
+            
+            self.view.addSubview(container)
+            self.loadingView = container
+        }
+    }
+    
+    private func stopLoadingView() {
+        DispatchQueue.main.async {
+            guard let loading = self.loadingView else { return }
+            UIView.animate(withDuration: 0.3, animations: {
+                loading.alpha = 0
+            }) { _ in
+                loading.removeFromSuperview()
+                self.loadingView = nil
+            }
+        }
     }
 }
 
