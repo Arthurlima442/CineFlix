@@ -21,24 +21,6 @@ class HomeMovieScreen: UIView {
         return view
     }()
     
-//    lazy var searchTextField: UITextField = {
-//        let search = UITextField()
-//        search.translatesAutoresizingMaskIntoConstraints = false
-//        search.borderStyle = .roundedRect
-//        search.clipsToBounds = true
-//        search.layer.cornerRadius = 4
-//        search.layer.borderColor = UIColor.white.cgColor
-//        search.layer.borderWidth = 1
-//        search.backgroundColor = .black
-//        search.textColor = .white
-//        // Placeholder branco
-//        search.attributedPlaceholder = NSAttributedString(
-//            string: "Search movie:",
-//            attributes: [.foregroundColor: UIColor.lightGray]
-//        )
-//        return search
-//    }()
-    
     lazy var searchBar: UISearchBar = {
         let search = UISearchBar()
         search.translatesAutoresizingMaskIntoConstraints = false

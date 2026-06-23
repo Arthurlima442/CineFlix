@@ -19,11 +19,11 @@ class RegisterViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configRegisterViewModal()
+        configViewModel()
         configScreen()
    }
     
-    func configRegisterViewModal() {
+    func configViewModel() {
         viewModel.delegate = self
     }
     
@@ -51,11 +51,6 @@ extension RegisterViewController: RegisterViewModelProtocol {
 
     func registerSuccess() {
         let tabBar = TabBarController()
-        
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-           let window = sceneDelegate.window {
-            window.rootViewController = tabBar
-            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromRight, animations: nil)
-        }
+        AppTransition.changeRootViewController(to: tabBar, with: .transitionFlipFromRight)
     }
 }

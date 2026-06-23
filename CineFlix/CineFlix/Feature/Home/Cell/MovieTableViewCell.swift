@@ -15,7 +15,7 @@ class MovieTableViewCell: UITableViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleToFill
         iv.clipsToBounds = true
-        iv.layer.cornerRadius = 10
+        iv.layer.cornerRadius = 15
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.tintColor = .white
         return iv
@@ -23,7 +23,7 @@ class MovieTableViewCell: UITableViewCell {
     
     lazy var nameMovieLabel: UILabel = {
         let name = UILabel()
-        name.font = .systemFont(ofSize: 15, weight: .semibold)
+        name.font = .systemFont(ofSize: 19, weight: .semibold)
         name.textColor = .white
         name.numberOfLines = 2
         name.translatesAutoresizingMaskIntoConstraints = false
@@ -32,7 +32,7 @@ class MovieTableViewCell: UITableViewCell {
     
     lazy var launchMovieLabel: UILabel = {
         let launch = UILabel()
-        launch.font = .systemFont(ofSize: 15, weight: .semibold)
+        launch.font = .systemFont(ofSize: 17, weight: .semibold)
         launch.textColor = .white
         launch.translatesAutoresizingMaskIntoConstraints = false
         return launch
@@ -40,7 +40,7 @@ class MovieTableViewCell: UITableViewCell {
     
     lazy var genreMovieLabel: UILabel = {
         let genre = UILabel()
-        genre.font = .systemFont(ofSize: 15, weight: .semibold)
+        genre.font = .systemFont(ofSize: 17, weight: .semibold)
         genre.textColor = .white
         genre.numberOfLines = 2
         genre.translatesAutoresizingMaskIntoConstraints = false
@@ -70,11 +70,11 @@ class MovieTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             movieImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 14),
             movieImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            movieImageView.heightAnchor.constraint(equalToConstant: 120),
-            movieImageView.widthAnchor.constraint(equalToConstant: 100),
+            movieImageView.heightAnchor.constraint(equalToConstant: 160),
+            movieImageView.widthAnchor.constraint(equalToConstant: 140),
             movieImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            nameMovieLabel.topAnchor.constraint(equalTo: movieImageView.topAnchor, constant: 14),
+            nameMovieLabel.topAnchor.constraint(equalTo: movieImageView.topAnchor, constant: 10),
             nameMovieLabel.leadingAnchor.constraint(equalTo: movieImageView.trailingAnchor, constant: 10),
             nameMovieLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             

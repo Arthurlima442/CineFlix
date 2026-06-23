@@ -14,51 +14,13 @@ class MovieDetailService {
     func fetchMovieDetail(by id: Int, completion: @escaping (Result<MovieDetail, Error>) -> Void) {
         let urlString = "https://api.themoviedb.org/3/movie/\(id)?api_key=\(apiKey)&language=pt-BR"
         
-        guard let url = URL(string: urlString) else {
-            completion(.failure(NSError(domain: "URL inválida", code: 0)))
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        
-        let startTime = Date()
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async {
-                NetworkLogger.log(request: request, response: response, data: data, error: error, startTime: startTime)
-                
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-                
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    completion(.failure(NSError(domain: "Resposta inválida", code: 0)))
-                    return
-                }
-                
-                guard (200...299).contains(httpResponse.statusCode) else {
-                    let statusError = NSError(domain: "Erro HTTP",
-                                              code: httpResponse.statusCode,
-                                              userInfo: [NSLocalizedDescriptionKey: "Erro HTTP \(httpResponse.statusCode)"])
-                    completion(.failure(statusError))
-                    return
-                }
-                
-                guard let data = data else {
-                    completion(.failure(NSError(domain: "Sem dados de resposta", code: 0)))
-                    return
-                }
-                
-                do {
-                    let object = try JSONDecoder().decode(MovieDetail.self, from: data)
-                    completion(.success(object))
-                } catch {
-                    completion(.failure(error))
-                }
+        NetworkService.request(urlString: urlString) { (result: Result<MovieDetail, Error>) in
+            switch result {
+            case .success(let movieDetail):
+                completion(.success(movieDetail))
+            case .failure(let error):
+                completion(.failure(error))
             }
-        }.resume()
+        }
     }
 }

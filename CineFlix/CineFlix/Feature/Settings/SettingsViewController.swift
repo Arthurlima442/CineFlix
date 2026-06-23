@@ -13,10 +13,10 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configScreen()
-        configViewModal()
+        configViewModel()
     }
     
-    func configViewModal() {
+    func configViewModel() {
         viewModel.delegate = self
     }
     
@@ -39,12 +39,7 @@ extension SettingsViewController: SettingsScreenProtocol {
         alert.addAction(UIAlertAction(title: "Exit", style: .destructive) { _ in
             let loginVC = ChooseSignInViewController()
             let navController = UINavigationController(rootViewController: loginVC)
-            
-            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-               let window = sceneDelegate.window {
-                window.rootViewController = navController
-                UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: nil)
-            }
+            AppTransition.changeRootViewController(to: navController, with: .transitionCrossDissolve)
         })
         
         present(alert, animated: true)
@@ -71,12 +66,7 @@ extension SettingsViewController: SettingsViewModelProtocol {
     func accountDeletedSuccessfully() {
         let loginVC = ChooseSignInViewController()
         let navController = UINavigationController(rootViewController: loginVC)
-        
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-           let window = sceneDelegate.window {
-            window.rootViewController = navController
-            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromLeft, animations: nil)
-        }
+        AppTransition.changeRootViewController(to: navController, with: .transitionFlipFromLeft)
     }
     
     func accountDeletionFailed(message: String) {

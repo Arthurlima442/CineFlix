@@ -28,16 +28,6 @@ class CategoryMenuViewModel {
         GenreItem(genre: $0, isSelected: $0 == genre)
     }
     
-    func selectGenre(at index: Int) {
-        for indexGenre in genreItems.indices {
-            if index == indexGenre {
-                genreItems[indexGenre].isSelected = true
-            } else {
-                genreItems[indexGenre].isSelected = false
-            }
-        }
-    }
-    
     func numberOfGenre() -> Int {
         return genreItems.count
     }

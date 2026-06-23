@@ -30,7 +30,7 @@ class MovieDetailViewController: UIViewController {
         configViewModel()
         configNavigation()
         fetchRequest()
-        nameBackBotton()
+        setupBackButtonTitle()
     }
     
     func configNavigation() {
@@ -45,7 +45,7 @@ class MovieDetailViewController: UIViewController {
         navigationController?.navigationBar.isTranslucent = false
     }
     
-    func nameBackBotton() {
+    func setupBackButtonTitle() {
         navigationItem.backButtonTitle = "Voltar"
     }
     

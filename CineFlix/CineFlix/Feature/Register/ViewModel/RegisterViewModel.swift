@@ -11,12 +11,12 @@ class RegisterViewModel {
     weak var delegate: RegisterViewModelProtocol?
     
     func validateFields(email: String, password: String, confirmPassword: String) {
-        guard isValidEmail(email) else {
+        guard ValidationHelper.isValidEmail(email) else {
             delegate?.showAlert(message: "Please enter a valid email.")
             return
         }
         
-        guard password.count >= 6 else {
+        guard ValidationHelper.isValidPassword(password) else {
             delegate?.showAlert(message: "Password must be at least 6 characters.")
             return
         }
@@ -27,11 +27,6 @@ class RegisterViewModel {
         }
         
         createUser(email: email, password: password)
-    }
-    
-    private func isValidEmail(_ email: String) -> Bool {
-        let regex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: email)
     }
     
     private func createUser(email: String, password: String) {

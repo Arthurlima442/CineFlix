@@ -11,162 +11,61 @@ class HomeService {
 
   private let apiKey = "ea1bfb9a0f4886c39967baaab322b1d8"
 
-  func fetchPopularMovies(completion: @escaping (Result<[MovieSummary], Error>) -> Void) {
-    let urlString = "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&language=pt-BR&page=1"
+  /// Busca filmes populares com suporte a paginação
+  /// - Parameters:
+  ///   - page: Número da página (padrão: 1)
+  ///   - completion: Closure com resultado contendo lista de filmes e metadados
+  func fetchPopularMovies(page: Int = 1, completion: @escaping (Result<MovieList, Error>) -> Void) {
+    let urlString = "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&language=pt-BR&page=\(page)"
+    
+    NetworkService.request(urlString: urlString) { (result: Result<MovieList, Error>) in
+      switch result {
+      case .success(let movieList):
+        completion(.success(movieList))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
 
-    guard let url = URL(string: urlString) else {
-      completion(.failure(NSError(domain: "URL inválida", code: 0)))
+  /// Busca filmes por gênero com suporte a paginação
+  /// - Parameters:
+  ///   - genre: Gênero de filme
+  ///   - page: Número da página (padrão: 1)
+  ///   - completion: Closure com resultado contendo lista de filmes e metadados
+  func fetchMoviesByGenre(_ genre: MovieGenre, page: Int = 1, completion: @escaping (Result<MovieList, Error>) -> Void) {
+    let urlString = "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&language=pt-BR&page=\(page)&with_genres=\(genre.id)"
+    
+    NetworkService.request(urlString: urlString) { (result: Result<MovieList, Error>) in
+      switch result {
+      case .success(let movieList):
+        completion(.success(movieList))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+
+  /// Busca filmes por query de pesquisa com suporte a paginação
+  /// - Parameters:
+  ///   - query: Texto de busca
+  ///   - page: Número da página (padrão: 1)
+  ///   - completion: Closure com resultado contendo lista de filmes e metadados
+  func searchMovies(query: String, page: Int = 1, completion: @escaping (Result<MovieList, Error>) -> Void) {
+    guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+      completion(.failure(NetworkError.invalidURL))
       return
     }
 
-    var request = URLRequest(url: url)
-    request.httpMethod = "GET"
-    request.setValue("application/json", forHTTPHeaderField: "Accept")
-
-    let startTime = Date()
-
-    URLSession.shared.dataTask(with: request) { data, response, error in
-      DispatchQueue.main.async {
-        NetworkLogger.log(request: request, response: response, data: data, error: error, startTime: startTime)
-
-        if let error = error {
-          completion(.failure(error))
-          return
-        }
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-          completion(.failure(NSError(domain: "Resposta inválida", code: 0)))
-          return
-        }
-
-        guard (200...299).contains(httpResponse.statusCode) else {
-          let statusError = NSError(domain: "Erro HTTP",
-                                    code: httpResponse.statusCode,
-                                    userInfo: [NSLocalizedDescriptionKey: "Erro HTTP \(httpResponse.statusCode)"])
-          completion(.failure(statusError))
-          return
-        }
-
-        guard let data = data else {
-          completion(.failure(NSError(domain: "Sem dados de resposta", code: 0)))
-          return
-        }
-
-        do {
-          let object = try JSONDecoder().decode(MovieList.self, from: data)
-//            completion(.success(object))
-          completion(.success(object.results ?? []))
-        } catch {
-          completion(.failure(error))
-        }
+    let urlString = "https://api.themoviedb.org/3/search/movie?api_key=\(apiKey)&language=pt-BR&page=\(page)&query=\(encodedQuery)"
+    
+    NetworkService.request(urlString: urlString) { (result: Result<MovieList, Error>) in
+      switch result {
+      case .success(let movieList):
+        completion(.success(movieList))
+      case .failure(let error):
+        completion(.failure(error))
       }
-    }.resume()
-  }
-
-  func fetchMoviesByGenre(_ genre: MovieGenre, completion: @escaping (Result<[MovieSummary], Error>) -> Void) {
-    let urlString = "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&language=pt-BR&page=1&with_genres=\(genre.id)"
-
-    guard let url = URL(string: urlString) else {
-      completion(.failure(NSError(domain: "URL inválida", code: 0)))
-      return
     }
-
-    var request = URLRequest(url: url)
-    request.httpMethod = "GET"
-    request.setValue("application/json", forHTTPHeaderField: "Accept")
-
-    let startTime = Date()
-
-    URLSession.shared.dataTask(with: request) { data, response, error in
-      DispatchQueue.main.async {
-        NetworkLogger.log(request: request, response: response, data: data, error: error, startTime: startTime)
-
-        if let error = error {
-          completion(.failure(error))
-          return
-        }
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-          completion(.failure(NSError(domain: "Resposta inválida", code: 0)))
-          return
-        }
-
-        guard (200...299).contains(httpResponse.statusCode) else {
-          let statusError = NSError(domain: "Erro HTTP",
-                                    code: httpResponse.statusCode,
-                                    userInfo: [NSLocalizedDescriptionKey: "Erro HTTP \(httpResponse.statusCode)"])
-          completion(.failure(statusError))
-          return
-        }
-
-        guard let data = data else {
-          completion(.failure(NSError(domain: "Sem dados de resposta", code: 0)))
-          return
-        }
-
-        do {
-          let object = try JSONDecoder().decode(MovieList.self, from: data)
-          completion(.success(object.results ?? []))
-        } catch {
-          completion(.failure(error))
-        }
-      }
-    }.resume()
-  }
-
-  func searchMovies(query: String, completion: @escaping (Result<[MovieSummary], Error>) -> Void) {
-      guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-          completion(.failure(NSError(domain: "Query inválida", code: 0)))
-          return
-      }
-
-      let urlString = "https://api.themoviedb.org/3/search/movie?api_key=\(apiKey)&language=pt-BR&page=1&query=\(encodedQuery)"
-
-      guard let url = URL(string: urlString) else {
-          completion(.failure(NSError(domain: "URL inválida", code: 0)))
-          return
-      }
-
-      var request = URLRequest(url: url)
-      request.httpMethod = "GET"
-      request.setValue("application/json", forHTTPHeaderField: "Accept")
-
-      let startTime = Date()
-
-      URLSession.shared.dataTask(with: request) { data, response, error in
-          DispatchQueue.main.async {
-              NetworkLogger.log(request: request, response: response, data: data, error: error, startTime: startTime)
-
-              if let error = error {
-                  completion(.failure(error))
-                  return
-              }
-
-              guard let httpResponse = response as? HTTPURLResponse else {
-                  completion(.failure(NSError(domain: "Resposta inválida", code: 0)))
-                  return
-              }
-
-              guard (200...299).contains(httpResponse.statusCode) else {
-                  let statusError = NSError(domain: "Erro HTTP",
-                                            code: httpResponse.statusCode,
-                                            userInfo: [NSLocalizedDescriptionKey: "Erro HTTP \(httpResponse.statusCode)"])
-                  completion(.failure(statusError))
-                  return
-              }
-
-              guard let data = data else {
-                  completion(.failure(NSError(domain: "Sem dados de resposta", code: 0)))
-                  return
-              }
-
-              do {
-                  let object = try JSONDecoder().decode(MovieList.self, from: data)
-                  completion(.success(object.results ?? []))
-              } catch {
-                  completion(.failure(error))
-              }
-          }
-      }.resume()
   }
 }

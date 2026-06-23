@@ -12,7 +12,6 @@ class HomeViewController: UIViewController {
     private let transitionDelegate = LeftSideTransitioningDelegate()
     var screen: HomeMovieScreen?
     private var viewModel: HomeViewModel = HomeViewModel()
-    var movies: [MovieSummary] = []
     
     override func loadView() {
         screen = HomeMovieScreen()
@@ -63,6 +62,8 @@ class HomeViewController: UIViewController {
     
     func configTableView() {
         screen?.configTableViewProtocols(delegate: self, dataSource: self)
+        // Detectar scroll para implementar carregamento infinito
+        screen?.tableView.delegate = self
     }
 }
 
@@ -137,5 +138,22 @@ extension HomeViewController: CategoryMenuViewControllerProtocol {
     func selectCategory(genreItem: GenreItem) {
         viewModel.fetchGenre(genre: genreItem)
         
+    }
+}
+
+extension HomeViewController: UIScrollViewDelegate {
+    /// Detecta quando o usuário fez scroll perto do final da TableView
+    /// e carrega a próxima página de filmes (scroll infinito)
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.size.height
+        
+        // Se o usuário está a 200pt do final, carrega a próxima página
+        let threshold: CGFloat = 200
+        
+        if offsetY > contentHeight - frameHeight - threshold {
+            viewModel.fetchNextPage()
+        }
     }
 }

@@ -8,12 +8,12 @@
 import Foundation
 
 class LocalFileReader {
-  static func loadJSON<T: Codable>(fileName: String, type: T.Type, completion: @escaping (Result<T, NetworkError>) -> Void) {
+  static func loadJSON<T: Codable>(fileName: String, type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
     DispatchQueue.global(qos: .userInitiated).async {
 
       guard let url = Bundle.main.url(forResource: fileName, withExtension: "json") else {
         DispatchQueue.main.async {
-          completion(.failure(.invalidURL(url: "\(fileName).json")))
+          completion(.failure(NSError(domain: "LocalFileReader", code: -1, userInfo: [NSLocalizedDescriptionKey: "Arquivo \(fileName).json não encontrado"])))
         }
         return
       }
@@ -27,7 +27,7 @@ class LocalFileReader {
         }
       } catch {
         DispatchQueue.main.async {
-          completion(.failure(.decodingError(error)))
+          completion(.failure(error))
         }
       }
     }

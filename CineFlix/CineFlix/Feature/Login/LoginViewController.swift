@@ -49,12 +49,7 @@ extension LoginViewController: LoginScreenProtocol {
 extension LoginViewController: LoginViewModelProtocol {
     func loginSuccess() {
         let tabBar = TabBarController()
-        
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-           let window = sceneDelegate.window {
-            window.rootViewController = tabBar
-            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromRight, animations: nil)
-        }
+        AppTransition.changeRootViewController(to: tabBar, with: .transitionFlipFromRight)
     }
     
     func loginError(message: String) {
