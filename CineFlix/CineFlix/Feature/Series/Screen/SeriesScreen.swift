@@ -70,6 +70,7 @@ class SeriesScreen: UIView {
         tableView.register(SeriesTableViewCell.self, forCellReuseIdentifier: SeriesTableViewCell.identifier)
         tableView.register(ErrorSeriesTableViewCell.self, forCellReuseIdentifier: ErrorSeriesTableViewCell.identifier)
         tableView.register(EmptySeriesTableViewCell.self, forCellReuseIdentifier: EmptySeriesTableViewCell.identifier)
+        tableView.register(SeriesSectionTableViewCell.self, forCellReuseIdentifier: SeriesSectionTableViewCell.identifier)
         tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         tableView.bounces = false

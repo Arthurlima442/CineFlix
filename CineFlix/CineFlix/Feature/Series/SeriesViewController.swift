@@ -30,11 +30,18 @@ class SeriesViewController: UIViewController {
         configScreen()
         configTableView()
         configViewModel()
-        viewModel.fetchPopularSeries()
+        setupInitialSections()
+    }
+    
+    // MARK: - Setup
+    
+    private func setupInitialSections() {
+        viewModel.setupInitialSections()
+        viewModel.loadAllSections()
     }
     
     func titleNav() {
-        title = "CineFlix"
+        title = "Séries"
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = .black
@@ -68,7 +75,7 @@ class SeriesViewController: UIViewController {
 
 extension SeriesViewController: SeriesScreenProtocol {
     func tappedPresentCategoryMenu() {
-        let categoryVC = SeriesCategoryMenuViewController(genre: viewModel.seriesGenre)
+        let categoryVC = SeriesCategoryMenuViewController()
         categoryVC.delegate = self
         categoryVC.modalPresentationStyle = .custom
         categoryVC.transitioningDelegate = transitionDelegate
@@ -95,38 +102,36 @@ extension SeriesViewController: SeriesViewModelProtocol {
 }
 
 extension SeriesViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return viewModel.numberOfSections()
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfNames()
+        return 1 // Each section has 1 row (the section cell with horizontal collection view)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 320 // Altura para acomodar título + CollectionView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if viewModel.isError {
-            let cell = tableView.dequeueReusableCell(withIdentifier: ErrorSeriesTableViewCell.identifier, for: indexPath) as? ErrorSeriesTableViewCell
-            cell?.setupCell(message: "Infelizmente tivemos um erro, tente novamente mais tarde")
-            return cell ?? UITableViewCell()
-        } else if viewModel.isNamesEmpty {
-            let cell = tableView.dequeueReusableCell(withIdentifier: EmptySeriesTableViewCell.identifier, for: indexPath) as? EmptySeriesTableViewCell
-            cell?.setupCell(with: "Nenhuma série encontrada")
-            return cell ?? UITableViewCell()
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: SeriesTableViewCell.identifier, for: indexPath) as? SeriesTableViewCell else {
-                return UITableViewCell()
-            }
-            cell.setupCell(seriesData: viewModel.loadCurrentSeriesSection(indexPath: indexPath))
-            return cell
+        guard let section = viewModel.getSection(at: indexPath.section) else {
+            return UITableViewCell()
         }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let series = viewModel.loadCurrentSeriesSection(indexPath: indexPath)
-        navigationController?.pushViewController(SeriesDetailViewController(idSeries: series.id), animated: true)
-        navigationItem.backButtonTitle = "Voltar"
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: SeriesSectionTableViewCell.identifier, for: indexPath) as! SeriesSectionTableViewCell
+        cell.configure(with: section, sectionIndex: indexPath.section)
+        cell.delegate = self
+        cell.selectionStyle = .none
+        
+        return cell
     }
 }
 
 extension SeriesViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        viewModel.searchSeries(series: searchText)
+        viewModel.searchSeries(query: searchText)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -134,25 +139,37 @@ extension SeriesViewController: UISearchBarDelegate {
     }
 }
 
-extension SeriesViewController: SeriesCategoryMenuViewControllerProtocol {
-    func selectCategory(genreItem: SeriesGenreItem) {
-        viewModel.fetchGenre(genre: genreItem)
+// MARK: - SeriesSectionTableViewCellDelegate
+
+extension SeriesViewController: SeriesSectionTableViewCellDelegate {
+    
+    func seriesSectionCell(_ cell: SeriesSectionTableViewCell, didSelectSeriesAt index: Int) {
+        guard let indexPath = screen?.tableView.indexPath(for: cell) else { return }
+        guard let series = viewModel.getSeriesInSection(indexPath.section, row: index) else { return }
+        
+        navigationController?.pushViewController(SeriesDetailViewController(idSeries: series.id), animated: true)
+        navigationItem.backButtonTitle = "Voltar"
+    }
+    
+    func seriesSectionCell(_ cell: SeriesSectionTableViewCell, shouldLoadMoreAt index: Int) {
+        viewModel.loadMoreForSection(at: index)
     }
 }
 
-extension SeriesViewController: UIScrollViewDelegate {
-    /// Detecta quando o usuário fez scroll perto do final da TableView
-    /// e carrega a próxima página de séries (scroll infinito)
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
-        let frameHeight = scrollView.frame.size.height
-        
-        // Se o usuário está a 200pt do final, carrega a próxima página
-        let threshold: CGFloat = 200
-        
-        if offsetY > contentHeight - frameHeight - threshold {
-            viewModel.fetchNextPage()
+extension SeriesViewController: SeriesCategoryMenuViewControllerProtocol {
+    func selectCategory(genreItem: SeriesGenreItem) {
+        if genreItem.genre == nil {
+            // "Populares" foi selecionado - volta ao estado inicial
+            viewModel.resetToAllCategories()
+        } else {
+            // Um gênero específico foi selecionado
+            viewModel.filterByGenre(genreItem.genre!)
         }
+        
+        // Reset completo da TableView para garantir layout organizado
+        screen?.tableView.setContentOffset(.zero, animated: false)
+        screen?.tableView.reloadData()
     }
 }
+
+
