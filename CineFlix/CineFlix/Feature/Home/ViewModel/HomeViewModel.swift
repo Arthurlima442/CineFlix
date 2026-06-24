@@ -12,6 +12,7 @@ protocol HomeViewModelProtocol: AnyObject {
     func failure()
     func startLoading()
     func stopLoading()
+    func updateSection(at index: Int)  // ← NOVO: atualizar apenas uma seção
 }
 
 class HomeViewModel {
@@ -165,6 +166,11 @@ class HomeViewModel {
             section.error = error
             sections[index] = section
         }
+        
+        // Notificar atualização apenas dessa seção
+        DispatchQueue.main.async {
+            self.delegate?.updateSection(at: index)
+        }
     }
     
     // MARK: - Paginação
@@ -226,7 +232,7 @@ class HomeViewModel {
             section.error = nil
             
         case .failure(let error):
-            section.currentPage -= 1 // Volta à página anterior em caso de erro
+            section.currentPage -= 1
             section.error = error
         }
         
@@ -234,7 +240,7 @@ class HomeViewModel {
         sections[index] = section
         
         DispatchQueue.main.async {
-            self.delegate?.success()
+            self.delegate?.updateSection(at: index)
         }
     }
     

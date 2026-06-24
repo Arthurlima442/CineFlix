@@ -87,12 +87,24 @@ extension SeriesViewController: SeriesScreenProtocol {
 extension SeriesViewController: SeriesViewModelProtocol {
     func success() {
         stopLoadingView()
-        screen?.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.screen?.tableView.reloadData()
+        }
     }
     
     func failure() {
         stopLoadingView()
-        screen?.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.screen?.tableView.reloadData()
+        }
+    }
+    
+    func updateSection(at index: Int) {
+        // Atualizar apenas a célula específica (mais eficiente)
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: 0, section: index)
+            self.screen?.tableView.reloadRows(at: [indexPath], with: .none)
+        }
     }
     
     func startLoading() {

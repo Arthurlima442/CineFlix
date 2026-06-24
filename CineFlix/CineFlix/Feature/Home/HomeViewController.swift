@@ -81,11 +81,23 @@ extension HomeViewController: HomeMovieScreenProtocol {
 
 extension HomeViewController: HomeViewModelProtocol {
     func success() {
-        screen?.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.screen?.tableView.reloadData()
+        }
     }
     
     func failure() {
-        screen?.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.screen?.tableView.reloadData()
+        }
+    }
+    
+    func updateSection(at index: Int) {
+        // Atualizar apenas a célula específica (mais eficiente)
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: index, section: 0)
+            self.screen?.tableView.reloadRows(at: [indexPath], with: .none)
+        }
     }
     
     func startLoading() {
@@ -183,7 +195,7 @@ extension HomeViewController: UIScrollViewDelegate {
         
         let visibleIndexPaths = tableView.indexPathsForVisibleRows ?? []
         for indexPath in visibleIndexPaths {
-            let sectionIndex = indexPath.row
+            let sectionIndex = indexPath.row  // Correto: row because numberOfRowsInSection returns viewModel.numberOfSections()
             
             // Load genre sections (index >= 4) on demand
             if sectionIndex >= 4 && sectionIndex < viewModel.numberOfSections() {
