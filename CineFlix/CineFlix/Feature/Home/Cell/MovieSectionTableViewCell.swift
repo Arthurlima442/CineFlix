@@ -18,6 +18,9 @@ class MovieSectionTableViewCell: UITableViewCell {
     private var movies: [MovieSummary] = []
     private var sectionIndex: Int = 0
     
+    // Preserve horizontal scroll position for each section
+    private static var savedHorizontalOffsets: [Int: CGFloat] = [:]
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         let layout = UICollectionViewFlowLayout()
         self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -90,9 +93,6 @@ class MovieSectionTableViewCell: UITableViewCell {
         self.movies = section.movies
         self.sectionIndex = sectionIndex
         
-        // Reset scroll position para o início
-        collectionView.setContentOffset(.zero, animated: false)
-        
         if movies.isEmpty {
             // Show empty state
             let emptyLabel = UILabel()
@@ -106,7 +106,17 @@ class MovieSectionTableViewCell: UITableViewCell {
             collectionView.backgroundView = nil
         }
         
-        collectionView.reloadData()
+        // Reload collection view asynchronously to avoid race conditions
+        // This prevents flickering when cell is reused
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.collectionView.reloadData()
+            
+            // Restore saved horizontal scroll position for this section
+            if let savedOffset = MovieSectionTableViewCell.savedHorizontalOffsets[sectionIndex] {
+                self.collectionView.setContentOffset(CGPoint(x: savedOffset, y: 0), animated: false)
+            }
+        }
     }
 }
 
@@ -118,14 +128,21 @@ extension MovieSectionTableViewCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MoviePosterCollectionViewCell.identifier, for: indexPath) as? MoviePosterCollectionViewCell else {
-            return UICollectionViewCell()
+        guard indexPath.item >= 0, indexPath.item < movies.count else {
+            let emptyCell = collectionView.dequeueReusableCell(withReuseIdentifier: MoviePosterCollectionViewCell.identifier, for: indexPath)
+            return emptyCell
+        }
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MoviePosterCollectionViewCell.identifier, for: indexPath)
+        
+        guard let movieCell = cell as? MoviePosterCollectionViewCell else {
+            return cell
         }
         
         let movie = movies[indexPath.item]
-        cell.configure(with: movie)
+        movieCell.configure(with: movie)
         
-        return cell
+        return movieCell
     }
 }
 
@@ -142,5 +159,19 @@ extension MovieSectionTableViewCell: UICollectionViewDelegate {
         if indexPath.item >= threshold && !movies.isEmpty {
             delegate?.movieSectionCell(self, shouldLoadMoreAt: sectionIndex)
         }
+    }
+}
+
+// MARK: - UIScrollViewDelegate (Preserve Horizontal Scroll)
+
+extension MovieSectionTableViewCell: UIScrollViewDelegate {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            MovieSectionTableViewCell.savedHorizontalOffsets[sectionIndex] = scrollView.contentOffset.x
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        MovieSectionTableViewCell.savedHorizontalOffsets[sectionIndex] = scrollView.contentOffset.x
     }
 }

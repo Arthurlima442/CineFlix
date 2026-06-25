@@ -7,21 +7,30 @@
 
 import Foundation
 
-enum MovieSectionType {
-    case popular
-    case topRated
-    case nowPlaying
-    case upcoming
-    case genre(MovieGenre)
-}
+// MARK: - MovieSection
 
 struct MovieSection {
-    var title: String
-    var type: MovieSectionType
-    var genre: MovieGenre?
+    enum SectionType {
+        case popular
+        case topRated
+        case nowPlaying
+        case upcoming
+        case genre
+    }
+    
+    let title: String
+    let type: SectionType
+    let genre: MovieGenre?
+    
     var movies: [MovieSummary] = []
     var currentPage: Int = 1
     var totalPages: Int = 1
     var isLoadingMore: Bool = false
     var error: Error?
+    
+    init(title: String, type: SectionType, genre: MovieGenre? = nil) {
+        self.title = title
+        self.type = type
+        self.genre = genre
+    }
 }

@@ -9,6 +9,9 @@ class MoviePosterCollectionViewCell: UICollectionViewCell {
     private let ratingLabel = UILabel()
     private let containerView = UIView()
     
+    // For detecting cell reuse with old image callbacks
+    private var currentMovieId: Int = -1
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -88,6 +91,9 @@ class MoviePosterCollectionViewCell: UICollectionViewCell {
     // MARK: - Configuration
     
     func configure(with movie: MovieSummary) {
+        // Store movie ID to validate callbacks later (prevents cell reuse issues)
+        self.currentMovieId = movie.id
+        
         titleLabel.text = movie.title
         
         // Handle optional voteAverage
@@ -98,9 +104,8 @@ class MoviePosterCollectionViewCell: UICollectionViewCell {
         }
         
         // Load poster image
-        if let posterPath = movie.posterPath {
-            let imageURL = URL(string: "https://image.tmdb.org/t/p/w200\(posterPath)")
-            posterImageView.loadImageFromURL(from: imageURL!, placeholder: UIImage(systemName: "hourglass"))
+        if let posterPath = movie.posterPath, let imageURL = URL(string: "https://image.tmdb.org/t/p/w200\(posterPath)") {
+            posterImageView.loadImageFromURL(from: imageURL, placeholder: UIImage(systemName: "hourglass"))
         } else {
             posterImageView.image = UIImage(systemName: "hourglass")
         }
@@ -110,9 +115,19 @@ class MoviePosterCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        posterImageView.imageDownloadTask?.cancel()
+        
+        // Cancel any pending download task before reusing cell
+        if let task = posterImageView.imageDownloadTask {
+            task.cancel()
+            posterImageView.imageDownloadTask = nil
+        }
+        
+        // Clear UI elements
         posterImageView.image = nil
         titleLabel.text = ""
         ratingLabel.text = ""
+        
+        // Reset movie ID to prevent old callbacks from being applied
+        currentMovieId = -1
     }
 }

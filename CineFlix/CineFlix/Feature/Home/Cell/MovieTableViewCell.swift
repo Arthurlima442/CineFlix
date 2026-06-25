@@ -100,4 +100,13 @@ class MovieTableViewCell: UITableViewCell {
                 .joined(separator: ", ")
                 ?? "—"
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        movieImageView.imageDownloadTask?.cancel()
+        movieImageView.image = nil
+        nameMovieLabel.text = ""
+        launchMovieLabel.text = ""
+        genreMovieLabel.text = ""
+    }
 }

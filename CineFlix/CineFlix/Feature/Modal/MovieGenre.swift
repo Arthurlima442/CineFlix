@@ -53,4 +53,8 @@ enum MovieGenre: String, CaseIterable {
         case .all: return 0
         }
     }
+    
+    var displayName: String {
+        return self.rawValue
+    }
 }

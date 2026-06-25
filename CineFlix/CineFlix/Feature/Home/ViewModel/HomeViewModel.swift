@@ -12,7 +12,7 @@ protocol HomeViewModelProtocol: AnyObject {
     func failure()
     func startLoading()
     func stopLoading()
-    func updateSection(at index: Int)  // ← NOVO: atualizar apenas uma seção
+    func updateSection(at index: Int)
 }
 
 class HomeViewModel {
@@ -25,35 +25,36 @@ class HomeViewModel {
     private(set) var isError: Bool = false
     private var isLoadingAllSections: Bool = false
     
+    // MARK: - Section Loading Control (Eager Loading Protection)
+    private var sectionLoadingStatus: [Int: Bool] = [:]
+    private var preloadQueue: DispatchQueue = DispatchQueue(label: "com.cineflix.preload.home", qos: .background)
+    private var isPreloadingGenres: Bool = false
+    
     // MARK: - Busca
-    private var searchQuery: String = ""
-    private var isSearching: Bool = false
-    var searchResults: [MovieSummary] = []
+    private(set) var searchQuery: String = ""
+    private(set) var isSearching: Bool = false
+    private(set) var searchResults: [MovieSummary] = []
     
     // MARK: - Setup Inicial
     
-    /// Inicializa todas as 23 seções (4 principais + 19 gêneros)
+    /// Inicializa todas as 4 seções principais + gêneros
     func setupInitialSections() {
         sections = []
-        
-        // 4 Seções principais
         sections.append(MovieSection(title: "Filmes Populares", type: .popular))
         sections.append(MovieSection(title: "Mais Bem Avaliados", type: .topRated))
-        sections.append(MovieSection(title: "Em Cartaz", type: .nowPlaying))
-        sections.append(MovieSection(title: "Lançamentos", type: .upcoming))
+        sections.append(MovieSection(title: "Em Breve", type: .upcoming))
+        sections.append(MovieSection(title: "Tendência Agora", type: .nowPlaying))
         
-        // 19 Gêneros
-        for genre in MovieGenre.allCases where genre != .all {
-            sections.append(MovieSection(title: genre.rawValue, type: .genre(genre), genre: genre))
+        // Adiciona seções de gêneros
+        for genre in MovieGenre.allCases {
+            sections.append(MovieSection(title: genre.displayName, type: .genre, genre: genre))
         }
     }
     
     // MARK: - Carregamento
     
-    /// Carrega apenas as 4 seções principais (performance optimization)
-    /// As demais seções (gêneros) são carregadas sob demanda
+    /// Carrega apenas as 4 seções principais (não os gêneros)
     func loadMainSectionsOnly() {
-        // Carrega apenas as 4 seções principais
         let mainSectionIndices = [0, 1, 2, 3]
         loadSelectedSections(mainSectionIndices)
     }
@@ -69,31 +70,6 @@ class HomeViewModel {
         let totalSections = indices.count
         
         for index in indices {
-            loadSectionData(at: index) { [weak self] in
-                loadedCount += 1
-                
-                if loadedCount == totalSections {
-                    self?.isLoadingAllSections = false
-                    DispatchQueue.main.async {
-                        self?.delegate?.stopLoading()
-                        self?.delegate?.success()
-                    }
-                }
-            }
-        }
-    }
-
-    /// Carrega dados para todas as seções (lazy loading)
-    func loadAllSections() {
-        guard !isLoadingAllSections else { return }
-        
-        isLoadingAllSections = true
-        delegate?.startLoading()
-        
-        var loadedCount = 0
-        let totalSections = sections.count
-        
-        for (index, _) in sections.enumerated() {
             loadSectionData(at: index) { [weak self] in
                 loadedCount += 1
                 
@@ -126,13 +102,13 @@ class HomeViewModel {
                     self.handleSectionResult(result, at: index)
                     completion()
                 }
-            case .nowPlaying:
-                self.service.fetchNowPlayingMovies(page: section.currentPage) { result in
+            case .upcoming:
+                self.service.fetchUpcomingMovies(page: section.currentPage) { result in
                     self.handleSectionResult(result, at: index)
                     completion()
                 }
-            case .upcoming:
-                self.service.fetchUpcomingMovies(page: section.currentPage) { result in
+            case .nowPlaying:
+                self.service.fetchNowPlayingMovies(page: section.currentPage) { result in
                     self.handleSectionResult(result, at: index)
                     completion()
                 }
@@ -167,7 +143,6 @@ class HomeViewModel {
             sections[index] = section
         }
         
-        // Notificar atualização apenas dessa seção
         DispatchQueue.main.async {
             self.delegate?.updateSection(at: index)
         }
@@ -180,13 +155,10 @@ class HomeViewModel {
         guard index >= 0, index < sections.count else { return }
         
         var section = sections[index]
-        
-        // Não carregar se já está carregando ou não há mais páginas
         guard !section.isLoadingMore, section.currentPage < section.totalPages else { return }
         
         section.isLoadingMore = true
         sections[index] = section
-        
         section.currentPage += 1
         
         let endpoint = {
@@ -199,12 +171,12 @@ class HomeViewModel {
                 self.service.fetchTopRatedMovies(page: section.currentPage) { result in
                     self.handleMoreResult(result, at: index)
                 }
-            case .nowPlaying:
-                self.service.fetchNowPlayingMovies(page: section.currentPage) { result in
-                    self.handleMoreResult(result, at: index)
-                }
             case .upcoming:
                 self.service.fetchUpcomingMovies(page: section.currentPage) { result in
+                    self.handleMoreResult(result, at: index)
+                }
+            case .nowPlaying:
+                self.service.fetchNowPlayingMovies(page: section.currentPage) { result in
                     self.handleMoreResult(result, at: index)
                 }
             case .genre:
@@ -248,39 +220,81 @@ class HomeViewModel {
     
     /// Filtra para exibir apenas um gênero
     func filterByGenre(_ genre: MovieGenre) {
-        // Mantém apenas as 4 seções principais + 1 gênero selecionado
-        let mainSections = sections.filter { section in
-            switch section.type {
-            case .popular, .topRated, .nowPlaying, .upcoming:
-                return true
-            default:
-                return false
-            }
-        }
-        let genreSection = MovieSection(title: genre.rawValue, type: .genre(genre), genre: genre)
+        let mainSections = sections.filter { $0.type != .genre }
+        let genreSection = MovieSection(title: genre.displayName, type: .genre, genre: genre)
         
         sections = mainSections + [genreSection]
-        
-        // Carrega dados da nova seção de gênero
         loadSectionData(at: sections.count - 1)
     }
     
-    /// Volta para exibir todas as 23 seções
+    /// Volta para exibir todas as seções
     func resetToAllCategories() {
         setupInitialSections()
-        loadAllSections()
+        loadMainSectionsOnly()
     }
     
-    /// Carrega uma seção sob demanda (lazy loading para gêneros)
-    /// Só carrega se ainda não foi carregada
-    func loadSectionIfNeeded(at index: Int) {
+    /// Carrega uma seção sob demanda com proteção contra duplicação
+    func loadSectionIfNeeded(at index: Int, force: Bool = false) {
         guard index >= 0, index < sections.count else { return }
         
         let section = sections[index]
         
-        // Só carrega se seção está vazia e não é das 4 principais
-        if section.movies.isEmpty && index >= 4 {
-            loadSectionData(at: index)
+        // Proteção: não carregar se já está carregando
+        if isLoadingSection(at: index) && !force {
+            return
+        }
+        
+        // Não carregar se já tem dados (a menos que force)
+        if !section.movies.isEmpty && !force {
+            return
+        }
+        
+        // Marca como carregando
+        setLoadingSection(true, at: index)
+        
+        // Dispara carregamento
+        loadSectionData(at: index) { [weak self] in
+            self?.setLoadingSection(false, at: index)
+        }
+    }
+    
+    // MARK: - Section Loading Control Helpers
+    
+    /// Verifica se uma seção está carregando
+    private func isLoadingSection(at index: Int) -> Bool {
+        return sectionLoadingStatus[index] ?? false
+    }
+    
+    /// Marca seção como carregando/não carregando
+    private func setLoadingSection(_ loading: Bool, at index: Int) {
+        DispatchQueue.main.async { [weak self] in
+            self?.sectionLoadingStatus[index] = loading
+        }
+    }
+    
+    /// Precarrega todos os gêneros em sequência (após 4 principais)
+    func preloadAllGenres() {
+        guard !isPreloadingGenres else { return }
+        
+        isPreloadingGenres = true
+        
+        // Encontra índice inicial dos gêneros (após 4 principais)
+        let genreStartIndex = 4
+        let totalSections = sections.count
+        
+        preloadQueue.async { [weak self] in
+            for index in genreStartIndex..<totalSections {
+                // Aguarda 200ms antes de cada requisição (fila sequencial)
+                usleep(200_000)
+                
+                DispatchQueue.main.async {
+                    self?.loadSectionIfNeeded(at: index, force: true)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self?.isPreloadingGenres = false
+            }
         }
     }
     
@@ -288,29 +302,45 @@ class HomeViewModel {
     
     /// Busca filmes
     func searchMovies(query: String) {
-        if query.isEmpty {
-            isSearching = false
-            searchQuery = ""
-            searchResults = []
-            delegate?.success()
-        } else {
-            isSearching = true
-            searchQuery = query
-            delegate?.startLoading()
-            
-            service.searchMovies(query: query, page: 1) { result in
-                switch result {
-                case .success(let movieList):
-                    self.searchResults = movieList.results ?? []
-                    self.delegate?.success()
-                case .failure(let error):
-                    print("❌ Error searching movies: \(error.localizedDescription)")
-                    self.searchResults = []
-                    self.delegate?.failure()
-                }
+        let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
+        if trimmedQuery.isEmpty {
+            DispatchQueue.main.async {
+                self.isSearching = false
+                self.searchQuery = ""
+                self.searchResults = []
                 self.delegate?.stopLoading()
+                self.delegate?.success()
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.isSearching = true
+                self.searchQuery = trimmedQuery
+                self.delegate?.startLoading()
+            }
+            
+            service.searchMovies(query: trimmedQuery, page: 1) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let movieList):
+                        self.searchResults = movieList.results ?? []
+                        self.delegate?.success()
+                    case .failure(let error):
+                        print("❌ Error searching movies: \(error.localizedDescription)")
+                        self.searchResults = []
+                        self.delegate?.failure()
+                    }
+                    self.delegate?.stopLoading()
+                }
             }
         }
+    }
+    
+    /// Limpa o estado de busca
+    func clearSearch() {
+        isSearching = false
+        searchQuery = ""
+        searchResults = []
+        delegate?.success()
     }
     
     // MARK: - Data Access
@@ -319,7 +349,7 @@ class HomeViewModel {
         return isSearching ? 1 : sections.count
     }
     
-    func numberOfMoviesInSection(_ section: Int) -> Int {
+    func numberOfItemsInSection(_ section: Int) -> Int {
         if isSearching {
             return searchResults.isEmpty ? 1 : searchResults.count
         } else {

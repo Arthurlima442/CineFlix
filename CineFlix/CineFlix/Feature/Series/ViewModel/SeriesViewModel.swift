@@ -25,10 +25,15 @@ class SeriesViewModel {
     private(set) var isError: Bool = false
     private var isLoadingAllSections: Bool = false
     
+    // MARK: - Section Loading Control (Eager Loading Protection)
+    private var sectionLoadingStatus: [Int: Bool] = [:]
+    private var preloadQueue: DispatchQueue = DispatchQueue(label: "com.cineflix.preload.series", qos: .background)
+    private var isPreloadingGenres: Bool = false
+    
     // MARK: - Busca
-    private var searchQuery: String = ""
-    private var isSearching: Bool = false
-    private var searchResults: [SeriesSummary] = []
+    private(set) var searchQuery: String = ""
+    private(set) var isSearching: Bool = false
+    private(set) var searchResults: [SeriesSummary] = []
     
     // MARK: - Setup Inicial
     
@@ -41,9 +46,12 @@ class SeriesViewModel {
         sections.append(SeriesSection(title: "Mais Bem Avaliadas", type: .topRated))
         sections.append(SeriesSection(title: "Em Alta", type: .onTheAir))
         
-        // 20 Gêneros
+        // Gêneros (excluindo temporariamente a categoria Terror - será implementada solução melhor)
         for genre in SeriesGenre.allCases {
-            sections.append(SeriesSection(title: genre.displayName, type: .genre, genre: genre))
+            // Temporarily exclude horror genre to resolve stability issues
+            if genre != .horror {
+                sections.append(SeriesSection(title: genre.displayName, type: .genre, genre: genre))
+            }
         }
     }
     
@@ -254,16 +262,68 @@ class SeriesViewModel {
         loadAllSections()
     }
     
-    /// Carrega uma seção sob demanda (lazy loading para gêneros)
-    /// Só carrega se ainda não foi carregada
-    func loadSectionIfNeeded(at index: Int) {
+    /// Carrega uma seção sob demanda com proteção contra duplicação
+    func loadSectionIfNeeded(at index: Int, force: Bool = false) {
         guard index >= 0, index < sections.count else { return }
         
         let section = sections[index]
         
-        // Só carrega se seção está vazia e não é das 3 principais
-        if section.series.isEmpty && index >= 3 {
-            loadSectionData(at: index)
+        // Proteção: não carregar se já está carregando
+        if isLoadingSection(at: index) && !force {
+            return
+        }
+        
+        // Não carregar se já tem dados (a menos que force)
+        if !section.series.isEmpty && !force {
+            return
+        }
+        
+        // Marca como carregando
+        setLoadingSection(true, at: index)
+        
+        // Dispara carregamento
+        loadSectionData(at: index) { [weak self] in
+            self?.setLoadingSection(false, at: index)
+        }
+    }
+    
+    // MARK: - Section Loading Control Helpers
+    
+    /// Verifica se uma seção está carregando
+    private func isLoadingSection(at index: Int) -> Bool {
+        return sectionLoadingStatus[index] ?? false
+    }
+    
+    /// Marca seção como carregando/não carregando
+    private func setLoadingSection(_ loading: Bool, at index: Int) {
+        DispatchQueue.main.async { [weak self] in
+            self?.sectionLoadingStatus[index] = loading
+        }
+    }
+    
+    /// Precarrega todos os gêneros em sequência (após 3 principais)
+    func preloadAllGenres() {
+        guard !isPreloadingGenres else { return }
+        
+        isPreloadingGenres = true
+        
+        // Encontra índice inicial dos gêneros (após 3 principais)
+        let genreStartIndex = 3
+        let totalSections = sections.count
+        
+        preloadQueue.async { [weak self] in
+            for index in genreStartIndex..<totalSections {
+                // Aguarda 200ms antes de cada requisição (fila sequencial)
+                usleep(200_000)
+                
+                DispatchQueue.main.async {
+                    self?.loadSectionIfNeeded(at: index, force: true)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self?.isPreloadingGenres = false
+            }
         }
     }
     
@@ -271,29 +331,45 @@ class SeriesViewModel {
     
     /// Busca séries
     func searchSeries(query: String) {
-        if query.isEmpty {
-            isSearching = false
-            searchQuery = ""
-            searchResults = []
-            delegate?.success()
-        } else {
-            isSearching = true
-            searchQuery = query
-            delegate?.startLoading()
-            
-            service.searchSeries(query: query, page: 1) { result in
-                switch result {
-                case .success(let seriesList):
-                    self.searchResults = seriesList.results
-                    self.delegate?.success()
-                case .failure(let error):
-                    print("❌ Error searching series: \(error.localizedDescription)")
-                    self.searchResults = []
-                    self.delegate?.failure()
-                }
+        let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
+        if trimmedQuery.isEmpty {
+            DispatchQueue.main.async {
+                self.isSearching = false
+                self.searchQuery = ""
+                self.searchResults = []
                 self.delegate?.stopLoading()
+                self.delegate?.success()
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.isSearching = true
+                self.searchQuery = trimmedQuery
+                self.delegate?.startLoading()
+            }
+            
+            service.searchSeries(query: trimmedQuery, page: 1) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let seriesList):
+                        self.searchResults = seriesList.results
+                        self.delegate?.success()
+                    case .failure(let error):
+                        print("❌ Error searching series: \(error.localizedDescription)")
+                        self.searchResults = []
+                        self.delegate?.failure()
+                    }
+                    self.delegate?.stopLoading()
+                }
             }
         }
+    }
+    
+    /// Limpa o estado de busca
+    func clearSearch() {
+        isSearching = false
+        searchQuery = ""
+        searchResults = []
+        delegate?.success()
     }
     
     // MARK: - Data Access

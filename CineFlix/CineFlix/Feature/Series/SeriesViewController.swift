@@ -39,6 +39,11 @@ class SeriesViewController: UIViewController {
     private func setupInitialSections() {
         viewModel.setupInitialSections()
         viewModel.loadMainSectionsOnly()
+        
+        // Preload all genres in background after a short delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.viewModel.preloadAllGenres()
+        }
     }
     
     func titleNav() {
@@ -86,14 +91,18 @@ extension SeriesViewController: SeriesScreenProtocol {
 
 extension SeriesViewController: SeriesViewModelProtocol {
     func success() {
-        stopLoadingView()
+        // Reset scroll to top when entering search mode
+        if viewModel.isSearching {
+            DispatchQueue.main.async {
+                self.screen?.tableView.setContentOffset(.zero, animated: false)
+            }
+        }
         DispatchQueue.main.async {
             self.screen?.tableView.reloadData()
         }
     }
     
     func failure() {
-        stopLoadingView()
         DispatchQueue.main.async {
             self.screen?.tableView.reloadData()
         }
@@ -102,6 +111,7 @@ extension SeriesViewController: SeriesViewModelProtocol {
     func updateSection(at index: Int) {
         // Atualizar apenas a célula específica (mais eficiente)
         DispatchQueue.main.async {
+            guard index >= 0, index < self.viewModel.numberOfSections() else { return }
             let indexPath = IndexPath(row: 0, section: index)
             self.screen?.tableView.reloadRows(at: [indexPath], with: .none)
         }
@@ -119,28 +129,71 @@ extension SeriesViewController: SeriesViewModelProtocol {
 extension SeriesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
+        if viewModel.isSearching {
+            return 1
+        }
         return viewModel.numberOfSections()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1 // Each section has 1 row (the section cell with horizontal collection view)
+        if viewModel.isSearching {
+            return viewModel.searchResults.count
+        }
+        return 1
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 320 // Altura para acomodar título + CollectionView
+        if viewModel.isSearching {
+            return 180
+        }
+        return 320
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let section = viewModel.getSection(at: indexPath.section) else {
+        // Modo Search - TableView simples com SeriesTableViewCell
+        if viewModel.isSearching {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SeriesTableViewCell.identifier, for: indexPath) as? SeriesTableViewCell else {
+                return UITableViewCell()
+            }
+            
+            guard indexPath.row >= 0, indexPath.row < viewModel.searchResults.count else {
+                return UITableViewCell()
+            }
+            
+            let series = viewModel.searchResults[indexPath.row]
+            cell.setupCell(seriesData: series)
+            cell.selectionStyle = .none
+            
+            return cell
+        }
+        
+        // Modo normal - Categorias com CollectionView
+        let sectionIndex = indexPath.section
+        guard let section = viewModel.getSection(at: sectionIndex) else {
             return UITableViewCell()
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: SeriesSectionTableViewCell.identifier, for: indexPath) as! SeriesSectionTableViewCell
-        cell.configure(with: section, sectionIndex: indexPath.section)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SeriesSectionTableViewCell.identifier, for: indexPath) as? SeriesSectionTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.configure(with: section, sectionIndex: sectionIndex)
         cell.delegate = self
         cell.selectionStyle = .none
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Se está em modo search, navegar para detalhe da série
+        if viewModel.isSearching {
+            guard indexPath.row >= 0, indexPath.row < viewModel.searchResults.count else { return }
+            let series = viewModel.searchResults[indexPath.row]
+            navigationController?.pushViewController(SeriesDetailViewController(idSeries: series.id), animated: true)
+            navigationItem.backButtonTitle = "Voltar"
+        }
     }
 }
 
@@ -173,6 +226,10 @@ extension SeriesViewController: SeriesSectionTableViewCellDelegate {
 
 extension SeriesViewController: SeriesCategoryMenuViewControllerProtocol {
     func selectCategory(genreItem: SeriesGenreItem) {
+        if viewModel.isSearching {
+            viewModel.clearSearch()
+        }
+        
         if genreItem.genre == nil {
             // "Populares" foi selecionado - volta ao estado inicial
             viewModel.resetToAllCategories()
@@ -183,24 +240,17 @@ extension SeriesViewController: SeriesCategoryMenuViewControllerProtocol {
         
         // Reset completo da TableView para garantir layout organizado
         screen?.tableView.setContentOffset(.zero, animated: false)
-        screen?.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.screen?.tableView.reloadData()
+        }
     }
 }
 
 extension SeriesViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Load genre sections on demand as user scrolls vertically
-        guard let tableView = screen?.tableView else { return }
-        
-        let visibleIndexPaths = tableView.indexPathsForVisibleRows ?? []
-        for indexPath in visibleIndexPaths {
-            let sectionIndex = indexPath.section
-            
-            // Load genre sections (index >= 3) on demand
-            if sectionIndex >= 3 && sectionIndex < viewModel.numberOfSections() {
-                viewModel.loadSectionIfNeeded(at: sectionIndex)
-            }
-        }
+        // Eager loading with preloadAllGenres() makes on-demand loading unnecessary
+        // All genre sections are preloaded in background with 200ms delays between requests
+        // This prevents scroll trap and ensures smooth scrolling performance
     }
 }
 

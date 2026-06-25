@@ -18,6 +18,9 @@ class SeriesSectionTableViewCell: UITableViewCell {
     private var series: [SeriesSummary] = []
     private var sectionIndex: Int = 0
     
+    // Preserve horizontal scroll position for each section
+    private static var savedHorizontalOffsets: [Int: CGFloat] = [:]
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         let layout = UICollectionViewFlowLayout()
         self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -90,9 +93,6 @@ class SeriesSectionTableViewCell: UITableViewCell {
         self.series = section.series
         self.sectionIndex = sectionIndex
         
-        // Reset scroll position para o início
-        collectionView.setContentOffset(.zero, animated: false)
-        
         if series.isEmpty {
             // Show empty state
             let emptyLabel = UILabel()
@@ -104,7 +104,17 @@ class SeriesSectionTableViewCell: UITableViewCell {
             collectionView.backgroundView = emptyLabel
         } else {
             collectionView.backgroundView = nil
-            collectionView.reloadData()
+            // Wrap collectionView.reloadData in async to prevent race conditions
+            // This reduces flickering when cell is reused during rapid section updates
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.collectionView.reloadData()
+                
+                // Restore saved horizontal scroll position for this section
+                if let savedOffset = SeriesSectionTableViewCell.savedHorizontalOffsets[sectionIndex] {
+                    self.collectionView.setContentOffset(CGPoint(x: savedOffset, y: 0), animated: false)
+                }
+            }
         }
     }
 }
@@ -118,12 +128,21 @@ extension SeriesSectionTableViewCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SeriesCollectionViewCell.identifier, for: indexPath) as! SeriesCollectionViewCell
+        guard indexPath.item >= 0, indexPath.item < series.count else {
+            let emptyCell = collectionView.dequeueReusableCell(withReuseIdentifier: SeriesCollectionViewCell.identifier, for: indexPath)
+            return emptyCell
+        }
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SeriesCollectionViewCell.identifier, for: indexPath)
+        
+        guard let seriesCell = cell as? SeriesCollectionViewCell else {
+            return cell
+        }
         
         let seriesItem = series[indexPath.item]
-        cell.configure(with: seriesItem)
+        seriesCell.configure(with: seriesItem)
         
-        return cell
+        return seriesCell
     }
 }
 
@@ -140,5 +159,19 @@ extension SeriesSectionTableViewCell: UICollectionViewDelegate {
         if indexPath.item == series.count - 3 {
             delegate?.seriesSectionCell(self, shouldLoadMoreAt: sectionIndex)
         }
+    }
+}
+
+// MARK: - UIScrollViewDelegate (Preserve Horizontal Scroll)
+
+extension SeriesSectionTableViewCell: UIScrollViewDelegate {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            SeriesSectionTableViewCell.savedHorizontalOffsets[sectionIndex] = scrollView.contentOffset.x
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        SeriesSectionTableViewCell.savedHorizontalOffsets[sectionIndex] = scrollView.contentOffset.x
     }
 }

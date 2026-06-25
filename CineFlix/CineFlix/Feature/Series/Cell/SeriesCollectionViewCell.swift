@@ -8,6 +8,7 @@ class SeriesCollectionViewCell: UICollectionViewCell {
     private let titleLabel = UILabel()
     private let ratingLabel = UILabel()
     private let containerView = UIView()
+    private var currentSeriesId: Int = -1
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -88,13 +89,13 @@ class SeriesCollectionViewCell: UICollectionViewCell {
     // MARK: - Configuration
     
     func configure(with series: SeriesSummary) {
+        self.currentSeriesId = series.id
         titleLabel.text = series.name
         ratingLabel.text = "⭐ \(String(format: "%.1f", series.voteAverage))"
         
         // Load poster image
-        if let posterPath = series.posterPath {
-            let imageURL = URL(string: "https://image.tmdb.org/t/p/w200\(posterPath)")
-            posterImageView.loadImageFromURL(from: imageURL!, placeholder: UIImage(systemName: "hourglass"))
+        if let posterPath = series.posterPath, let imageURL = URL(string: "https://image.tmdb.org/t/p/w200\(posterPath)") {
+            posterImageView.loadImageFromURL(from: imageURL, placeholder: UIImage(systemName: "hourglass"))
         } else {
             posterImageView.image = UIImage(systemName: "hourglass")
         }
@@ -104,9 +105,14 @@ class SeriesCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        posterImageView.imageDownloadTask?.cancel()
+        // Cancel any pending image download task to prevent stale callbacks
+        if let task = posterImageView.imageDownloadTask {
+            task.cancel()
+            posterImageView.imageDownloadTask = nil
+        }
         posterImageView.image = nil
         titleLabel.text = ""
         ratingLabel.text = ""
+        currentSeriesId = -1
     }
 }

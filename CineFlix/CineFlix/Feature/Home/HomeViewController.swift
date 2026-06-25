@@ -34,6 +34,11 @@ class HomeViewController: UIViewController {
         // Load initial sections and data (optimized: load only 4 main sections)
         viewModel.setupInitialSections()
         viewModel.loadMainSectionsOnly()
+        
+        // Preload all genres in background after a short delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.viewModel.preloadAllGenres()
+        }
     }
     
     func titleNav() {
@@ -81,6 +86,12 @@ extension HomeViewController: HomeMovieScreenProtocol {
 
 extension HomeViewController: HomeViewModelProtocol {
     func success() {
+        // Reset scroll to top when entering search mode
+        if viewModel.isSearching {
+            DispatchQueue.main.async {
+                self.screen?.tableView.setContentOffset(.zero, animated: false)
+            }
+        }
         DispatchQueue.main.async {
             self.screen?.tableView.reloadData()
         }
@@ -93,9 +104,9 @@ extension HomeViewController: HomeViewModelProtocol {
     }
     
     func updateSection(at index: Int) {
-        // Atualizar apenas a célula específica (mais eficiente)
         DispatchQueue.main.async {
-            let indexPath = IndexPath(row: index, section: 0)
+            guard index >= 0, index < self.viewModel.numberOfSections() else { return }
+            let indexPath = IndexPath(row: 0, section: index)
             self.screen?.tableView.reloadRows(at: [indexPath], with: .none)
         }
     }
@@ -111,60 +122,71 @@ extension HomeViewController: HomeViewModelProtocol {
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if viewModel.isSearching {
+            return 1
+        }
         return viewModel.numberOfSections()
     }
     
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if viewModel.isSearching {
+            return viewModel.searchResults.count
+        }
+        return 1
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if viewModel.isSearching {
+            return 180
+        }
         return 320
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let sectionIndex = indexPath.row
-        
-        // If searching
-        if viewModel.numberOfSections() == 1 && viewModel.searchResults.isEmpty {
-            let cell = tableView.dequeueReusableCell(withIdentifier: EmptyTableViewCell.identifier, for: indexPath) as? EmptyTableViewCell
-            cell?.setupCell(message: "Não encontramos nenhum filme")
-            return cell ?? UITableViewCell()
-        }
-        
-        // If searching and has results
-        if viewModel.numberOfSections() == 1 {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieSectionTableViewCell.identifier, for: indexPath) as? MovieSectionTableViewCell else {
+        // Modo Search - TableView simples com MovieTableViewCell
+        if viewModel.isSearching {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieTableViewCell.identifier, for: indexPath) as? MovieTableViewCell else {
                 return UITableViewCell()
             }
             
-            // Create a temporary section for search results
-            var searchSection = MovieSection(title: "Resultados", type: .popular)
-            searchSection.movies = viewModel.searchResults
+            guard indexPath.row >= 0, indexPath.row < viewModel.searchResults.count else {
+                return UITableViewCell()
+            }
             
-            cell.configure(with: searchSection, sectionIndex: sectionIndex)
-            cell.delegate = self
+            let movie = viewModel.searchResults[indexPath.row]
+            cell.setupCell(movieData: movie)
+            cell.selectionStyle = .none
             
             return cell
         }
         
-        // Normal multi-section view
-        if let section = viewModel.getSection(at: sectionIndex) {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieSectionTableViewCell.identifier, for: indexPath) as? MovieSectionTableViewCell else {
-                return UITableViewCell()
-            }
-            
-            cell.configure(with: section, sectionIndex: sectionIndex)
-            cell.delegate = self
-            
-            return cell
+        // Modo Normal - Categorias com CollectionView
+        let sectionIndex = indexPath.section
+        guard let section = viewModel.getSection(at: sectionIndex) else {
+            return UITableViewCell()
         }
         
-        return UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieSectionTableViewCell.identifier, for: indexPath) as? MovieSectionTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.configure(with: section, sectionIndex: sectionIndex)
+        cell.delegate = self
+        cell.selectionStyle = .none
+        
+        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Se está em modo search, navegar para detalhe do filme
+        if viewModel.isSearching {
+            guard indexPath.row >= 0, indexPath.row < viewModel.searchResults.count else { return }
+            let movie = viewModel.searchResults[indexPath.row]
+            navigationController?.pushViewController(MovieDetailViewController(idMovie: movie.id), animated: true)
+            navigationItem.backButtonTitle = "Voltar"
+        }
     }
 }
 
@@ -184,38 +206,37 @@ extension HomeViewController: UISearchBarDelegate {
 
 extension HomeViewController: CategoryMenuViewControllerProtocol {
     func selectCategory(genreItem: GenreItem) {
+        // Limpar search antes de filtrar
+        if viewModel.isSearching {
+            viewModel.clearSearch()
+        }
+        
+        // Filtrar por gênero
         viewModel.filterByGenre(genreItem.genre)
+        
+        screen?.tableView.setContentOffset(.zero, animated: false)
+        DispatchQueue.main.async {
+            self.screen?.tableView.reloadData()
+        }
     }
 }
 
 extension HomeViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Load genre sections on demand as user scrolls vertically
-        guard let tableView = screen?.tableView else { return }
-        
-        let visibleIndexPaths = tableView.indexPathsForVisibleRows ?? []
-        for indexPath in visibleIndexPaths {
-            let sectionIndex = indexPath.row  // Correto: row because numberOfRowsInSection returns viewModel.numberOfSections()
-            
-            // Load genre sections (index >= 4) on demand
-            if sectionIndex >= 4 && sectionIndex < viewModel.numberOfSections() {
-                viewModel.loadSectionIfNeeded(at: sectionIndex)
-            }
-        }
+        // Eager loading: All sections are preloaded in background
+        // No need to load sections on demand during scroll
+        // This eliminates the "scrollViewDidScroll trap" that caused flickering
     }
 }
 
 extension HomeViewController: MovieSectionTableViewCellDelegate {
     func movieSectionCell(_ cell: MovieSectionTableViewCell, didSelectMovieAt index: Int, sectionIndex: Int) {
-        // Determine which movie was selected
-        if viewModel.numberOfSections() == 1 {
-            // Search results
+        if viewModel.isSearching {
             if let movie = viewModel.searchResults[safe: index] {
                 navigationController?.pushViewController(MovieDetailViewController(idMovie: movie.id), animated: true)
                 navigationItem.backButtonTitle = "Voltar"
             }
         } else {
-            // Multi-section view
             if let movie = viewModel.getMovieInSection(sectionIndex, row: index) {
                 navigationController?.pushViewController(MovieDetailViewController(idMovie: movie.id), animated: true)
                 navigationItem.backButtonTitle = "Voltar"

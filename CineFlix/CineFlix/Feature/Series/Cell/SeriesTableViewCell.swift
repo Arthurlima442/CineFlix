@@ -99,4 +99,13 @@ class SeriesTableViewCell: UITableViewCell {
             .compactMap { genreMap[$0] }
             .joined(separator: ", ")
     }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        seriesImageView.imageDownloadTask?.cancel()
+        seriesImageView.image = nil
+        nameSeriesLabel.text = ""
+        firstAirDateLabel.text = ""
+        genreSeriesLabel.text = ""
+    }
 }
