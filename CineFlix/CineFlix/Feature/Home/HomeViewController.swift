@@ -11,7 +11,7 @@ class HomeViewController: UIViewController {
     
     private let transitionDelegate = LeftSideTransitioningDelegate()
     var screen: HomeMovieScreen?
-    private var viewModel: HomeViewModel = HomeViewModel()
+    var viewModel: HomeViewModel = HomeViewModel()
     
     override func loadView() {
         screen = HomeMovieScreen()
@@ -200,6 +200,10 @@ extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
 }
 
 extension HomeViewController: CategoryMenuViewControllerProtocol {
@@ -221,9 +225,8 @@ extension HomeViewController: CategoryMenuViewControllerProtocol {
 
 extension HomeViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Eager loading: All sections are preloaded in background
-        // No need to load sections on demand during scroll
-        // This eliminates the "scrollViewDidScroll trap" that caused flickering
+        // Dismiss keyboard when scrolling
+        screen?.searchBar.resignFirstResponder()
     }
 }
 

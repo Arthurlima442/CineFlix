@@ -11,8 +11,7 @@ class SeriesViewController: UIViewController {
     
     private let transitionDelegate = LeftSideTransitioningDelegate()
     var screen: SeriesScreen?
-    private var viewModel: SeriesViewModel = SeriesViewModel()
-    private var loadingView: UIView?
+    var viewModel: SeriesViewModel = SeriesViewModel()
     
     override func loadView() {
         screen = SeriesScreen()
@@ -106,6 +105,14 @@ extension SeriesViewController: SeriesViewModelProtocol {
         }
     }
     
+    func startLoading() {
+        // Loading indicator if needed
+    }
+    
+    func stopLoading() {
+        // Stop loading indicator if needed
+    }
+    
     func updateSection(at index: Int) {
         // Atualizar apenas a célula específica (mais eficiente)
         DispatchQueue.main.async {
@@ -113,14 +120,6 @@ extension SeriesViewController: SeriesViewModelProtocol {
             let indexPath = IndexPath(row: 0, section: index)
             self.screen?.tableView.reloadRows(at: [indexPath], with: .none)
         }
-    }
-    
-    func startLoading() {
-        startLoadingView()
-    }
-    
-    func stopLoading() {
-        stopLoadingView()
     }
 }
 
@@ -203,6 +202,10 @@ extension SeriesViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
 }
 
 // MARK: - SeriesSectionTableViewCellDelegate
@@ -246,75 +249,7 @@ extension SeriesViewController: SeriesCategoryMenuViewControllerProtocol {
 
 extension SeriesViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Eager loading with preloadAllGenres() makes on-demand loading unnecessary
-        // All genre sections are preloaded in background with 200ms delays between requests
-        // This prevents scroll trap and ensures smooth scrolling performance
-    }
-}
-
-// MARK: - Loading Methods
-
-extension SeriesViewController {
-    private func startLoadingView() {
-        DispatchQueue.main.async {
-            guard self.loadingView == nil else { return }
-            
-            let container = UIView()
-            container.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-            container.frame = self.view.bounds
-            
-            let spinner = UIView()
-            spinner.layer.borderColor = UIColor(red: 1, green: 0.4, blue: 0.2, alpha: 1).cgColor
-            spinner.layer.borderWidth = 3
-            spinner.layer.cornerRadius = 35
-            spinner.backgroundColor = .clear
-            
-            let label = UILabel()
-            label.text = "Carregando séries..."
-            label.textColor = .white
-            label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-            label.textAlignment = .center
-            
-            container.addSubview(spinner)
-            container.addSubview(label)
-            
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            label.translatesAutoresizingMaskIntoConstraints = false
-            
-            NSLayoutConstraint.activate([
-                spinner.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                spinner.centerYAnchor.constraint(equalTo: container.centerYAnchor, constant: -30),
-                spinner.widthAnchor.constraint(equalToConstant: 70),
-                spinner.heightAnchor.constraint(equalToConstant: 70),
-                
-                label.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 20),
-                label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-                label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20)
-            ])
-            
-            let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
-            rotation.toValue = CGFloat.pi * 2
-            rotation.duration = 1.5
-            rotation.timingFunction = CAMediaTimingFunction(name: .linear)
-            rotation.repeatCount = .infinity
-            spinner.layer.add(rotation, forKey: "rotation")
-            
-            self.view.addSubview(container)
-            self.loadingView = container
-        }
-    }
-    
-    private func stopLoadingView() {
-        DispatchQueue.main.async {
-            guard let loading = self.loadingView else { return }
-            UIView.animate(withDuration: 0.3, animations: {
-                loading.alpha = 0
-            }) { _ in
-                loading.removeFromSuperview()
-                self.loadingView = nil
-            }
-        }
+        screen?.searchBar.resignFirstResponder()
     }
 }
 
