@@ -34,6 +34,8 @@ class HomeViewModel {
     private(set) var searchQuery: String = ""
     private(set) var isSearching: Bool = false
     private(set) var searchResults: [MovieSummary] = []
+    private var searchDebounceTimer: Timer?
+    private var lastSearchQuery: String = ""
     
     // MARK: - Setup Inicial
     
@@ -132,15 +134,28 @@ class HomeViewModel {
         switch result {
         case .success(let movieList):
             var section = sections[index]
+            let movieCount = movieList.results?.count ?? 0
             section.movies = movieList.results ?? []
             section.totalPages = movieList.totalPages ?? 1
             section.error = nil
             sections[index] = section
             
+            #if DEBUG
+            print("✅ [HomeViewModel] Section '\(section.type)' loaded: \(movieCount) movies")
+            #endif
+            
+            DispatchQueue.main.async {
+                self.delegate?.updateSection(at: index)
+            }
+            
         case .failure(let error):
             var section = sections[index]
             section.error = error
             sections[index] = section
+            
+            #if DEBUG
+            print("❌ [HomeViewModel] Section '\(section.type)' error: \(error.localizedDescription)")
+            #endif
         }
         
         DispatchQueue.main.async {
@@ -284,8 +299,8 @@ class HomeViewModel {
         
         preloadQueue.async { [weak self] in
             for index in genreStartIndex..<totalSections {
-                // Aguarda 200ms antes de cada requisição (fila sequencial)
-                usleep(200_000)
+                // Aguarda 500ms entre cada requisição (mais espaço entre requisições)
+                usleep(500_000)
                 
                 DispatchQueue.main.async {
                     self?.loadSectionIfNeeded(at: index, force: true)
@@ -300,32 +315,52 @@ class HomeViewModel {
     
     // MARK: - Busca
     
-    /// Busca filmes
+    /// Busca filmes com debounce de 500ms
     func searchMovies(query: String) {
         let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
+        
+        // Cancel previous debounce timer
+        searchDebounceTimer?.invalidate()
+        searchDebounceTimer = nil
+        
         if trimmedQuery.isEmpty {
             DispatchQueue.main.async {
                 self.isSearching = false
                 self.searchQuery = ""
                 self.searchResults = []
+                self.lastSearchQuery = ""
                 self.delegate?.stopLoading()
                 self.delegate?.success()
             }
         } else {
-            DispatchQueue.main.async {
-                self.isSearching = true
-                self.searchQuery = trimmedQuery
-                self.delegate?.startLoading()
-            }
+            // Skip if same query
+            guard trimmedQuery != lastSearchQuery else { return }
+            lastSearchQuery = trimmedQuery
             
-            service.searchMovies(query: trimmedQuery, page: 1) { result in
-                DispatchQueue.main.async {
+            // Debounce search request by 500ms
+            searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+                self?.performSearch(query: trimmedQuery)
+            }
+        }
+    }
+    
+    private func performSearch(query: String) {
+        DispatchQueue.main.async {
+            self.isSearching = true
+            self.searchQuery = query
+            self.delegate?.startLoading()
+        }
+        
+        service.searchMovies(query: query, page: 1) { result in
+            DispatchQueue.main.async {
                     switch result {
                     case .success(let movieList):
                         self.searchResults = movieList.results ?? []
                         self.delegate?.success()
                     case .failure(let error):
+                        #if DEBUG
                         print("❌ Error searching movies: \(error.localizedDescription)")
+                        #endif
                         self.searchResults = []
                         self.delegate?.failure()
                     }
@@ -333,7 +368,6 @@ class HomeViewModel {
                 }
             }
         }
-    }
     
     /// Limpa o estado de busca
     func clearSearch() {

@@ -20,9 +20,10 @@ class SlideInTransition: NSObject, UIViewControllerAnimatedTransitioning {
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let container = transitionContext.containerView
 
-        if isPresenting, let toView = transitionContext.view(forKey: .to) {
-            let finalFrame = transitionContext.finalFrame(for: transitionContext.viewController(forKey: .to)!)
-            toView.frame = finalFrame.offsetBy(dx: -finalFrame.width, dy: 0) // começa fora da tela à esquerda
+        if isPresenting, let toView = transitionContext.view(forKey: .to),
+           let toViewController = transitionContext.viewController(forKey: .to) {
+            let finalFrame = transitionContext.finalFrame(for: toViewController)
+            toView.frame = finalFrame.offsetBy(dx: -finalFrame.width, dy: 0)
             container.addSubview(toView)
 
             UIView.animate(withDuration: transitionDuration(using: transitionContext)) {

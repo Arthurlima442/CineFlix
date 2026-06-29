@@ -91,13 +91,11 @@ extension SeriesViewController: SeriesScreenProtocol {
 
 extension SeriesViewController: SeriesViewModelProtocol {
     func success() {
-        // Reset scroll to top when entering search mode
-        if viewModel.isSearching {
-            DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            // Reset scroll to top when entering search mode
+            if self.viewModel.isSearching {
                 self.screen?.tableView.setContentOffset(.zero, animated: false)
             }
-        }
-        DispatchQueue.main.async {
             self.screen?.tableView.reloadData()
         }
     }

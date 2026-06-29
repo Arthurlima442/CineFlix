@@ -90,6 +90,7 @@ class SeriesSectionTableViewCell: UITableViewCell {
     
     func configure(with section: SeriesSection, sectionIndex: Int) {
         self.titleLabel.text = section.title
+        let dataMudou = self.series != section.series
         self.series = section.series
         self.sectionIndex = sectionIndex
         
@@ -104,15 +105,17 @@ class SeriesSectionTableViewCell: UITableViewCell {
             collectionView.backgroundView = emptyLabel
         } else {
             collectionView.backgroundView = nil
-            // Wrap collectionView.reloadData in async to prevent race conditions
-            // This reduces flickering when cell is reused during rapid section updates
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.collectionView.reloadData()
-                
-                // Restore saved horizontal scroll position for this section
-                if let savedOffset = SeriesSectionTableViewCell.savedHorizontalOffsets[sectionIndex] {
-                    self.collectionView.setContentOffset(CGPoint(x: savedOffset, y: 0), animated: false)
+            
+            // Only reload if data actually changed
+            if dataMudou {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.collectionView.reloadData()
+                    
+                    // Restore saved horizontal scroll position for this section
+                    if let savedOffset = SeriesSectionTableViewCell.savedHorizontalOffsets[sectionIndex] {
+                        self.collectionView.setContentOffset(CGPoint(x: savedOffset, y: 0), animated: false)
+                    }
                 }
             }
         }

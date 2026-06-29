@@ -34,6 +34,8 @@ class SeriesViewModel {
     private(set) var searchQuery: String = ""
     private(set) var isSearching: Bool = false
     private(set) var searchResults: [SeriesSummary] = []
+    private var searchDebounceTimer: Timer?
+    private var lastSearchQuery: String = ""
     
     // MARK: - Setup Inicial
     
@@ -313,8 +315,8 @@ class SeriesViewModel {
         
         preloadQueue.async { [weak self] in
             for index in genreStartIndex..<totalSections {
-                // Aguarda 200ms antes de cada requisição (fila sequencial)
-                usleep(200_000)
+                // Aguarda 500ms entre cada requisição (mais espaço entre requisições)
+                usleep(500_000)
                 
                 DispatchQueue.main.async {
                     self?.loadSectionIfNeeded(at: index, force: true)
@@ -329,40 +331,59 @@ class SeriesViewModel {
     
     // MARK: - Busca
     
-    /// Busca séries
+    /// Busca séries com debounce de 500ms
     func searchSeries(query: String) {
         let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
+        
+        // Cancel previous debounce timer
+        searchDebounceTimer?.invalidate()
+        searchDebounceTimer = nil
+        
         if trimmedQuery.isEmpty {
             DispatchQueue.main.async {
                 self.isSearching = false
                 self.searchQuery = ""
                 self.searchResults = []
+                self.lastSearchQuery = ""
                 self.delegate?.stopLoading()
                 self.delegate?.success()
             }
         } else {
-            DispatchQueue.main.async {
-                self.isSearching = true
-                self.searchQuery = trimmedQuery
-                self.delegate?.startLoading()
-            }
+            // Skip if same query
+            guard trimmedQuery != lastSearchQuery else { return }
+            lastSearchQuery = trimmedQuery
             
-            service.searchSeries(query: trimmedQuery, page: 1) { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let seriesList):
-                        self.searchResults = seriesList.results
-                        self.delegate?.success()
-                    case .failure(let error):
-                        print("❌ Error searching series: \(error.localizedDescription)")
-                        self.searchResults = []
-                        self.delegate?.failure()
+            // Debounce search request by 500ms
+            searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+                self?.performSearch(query: trimmedQuery)
+            }
+        }
+    }
+    
+    private func performSearch(query: String) {
+        DispatchQueue.main.async {
+            self.isSearching = true
+            self.searchQuery = query
+            self.delegate?.startLoading()
+        }
+        
+        service.searchSeries(query: query, page: 1) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let seriesList):
+                    self.searchResults = seriesList.results
+                    self.delegate?.success()
+                case .failure(let error):
+                    #if DEBUG
+                    print("❌ Error searching series: \(error.localizedDescription)")
+                    #endif
+                    self.searchResults = []
+                    self.delegate?.failure()
                     }
                     self.delegate?.stopLoading()
                 }
             }
         }
-    }
     
     /// Limpa o estado de busca
     func clearSearch() {

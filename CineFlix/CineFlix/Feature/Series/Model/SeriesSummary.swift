@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SeriesSummary: Codable {
+struct SeriesSummary: Codable, Equatable {
     let id: Int
     let name: String
     let posterPath: String?

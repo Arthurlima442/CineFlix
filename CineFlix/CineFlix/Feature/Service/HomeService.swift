@@ -87,16 +87,11 @@ class HomeService {
   func fetchMoviesByGenre(_ genre: MovieGenre, page: Int = 1, completion: @escaping (Result<MovieList, Error>) -> Void) {
     let urlString = "https://api.themoviedb.org/3/discover/movie?api_key=\(apiKey)&language=pt-BR&page=\(page)&with_genres=\(genre.id)"
     
-    print("🔴 DEBUG SERVICE-1: fetchMoviesByGenre called for \(genre.rawValue) (id: \(genre.id))")
-    print("🔴 DEBUG SERVICE-2: URL: \(urlString)")
-    
     NetworkService.request(urlString: urlString) { (result: Result<MovieList, Error>) in
       switch result {
       case .success(let movieList):
-        print("🔴 DEBUG SERVICE-3: Success! Received \(movieList.results?.count ?? 0) movies")
         completion(.success(movieList))
       case .failure(let error):
-        print("🔴 DEBUG SERVICE-3: Failure! Error: \(error.localizedDescription)")
         completion(.failure(error))
       }
     }

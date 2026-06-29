@@ -90,6 +90,7 @@ class MovieSectionTableViewCell: UITableViewCell {
     
     func configure(with section: MovieSection, sectionIndex: Int) {
         self.titleLabel.text = section.title
+        let dataMudou = self.movies != section.movies
         self.movies = section.movies
         self.sectionIndex = sectionIndex
         
@@ -106,15 +107,16 @@ class MovieSectionTableViewCell: UITableViewCell {
             collectionView.backgroundView = nil
         }
         
-        // Reload collection view asynchronously to avoid race conditions
-        // This prevents flickering when cell is reused
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.collectionView.reloadData()
-            
-            // Restore saved horizontal scroll position for this section
-            if let savedOffset = MovieSectionTableViewCell.savedHorizontalOffsets[sectionIndex] {
-                self.collectionView.setContentOffset(CGPoint(x: savedOffset, y: 0), animated: false)
+        // Only reload if data actually changed
+        if dataMudou {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.collectionView.reloadData()
+                
+                // Restore saved horizontal scroll position for this section
+                if let savedOffset = MovieSectionTableViewCell.savedHorizontalOffsets[sectionIndex] {
+                    self.collectionView.setContentOffset(CGPoint(x: savedOffset, y: 0), animated: false)
+                }
             }
         }
     }
