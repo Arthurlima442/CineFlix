@@ -109,7 +109,7 @@ class SeriesService {
   ///   - id: ID da série
   ///   - completion: Closure com resultado contendo detalhes da série
   func fetchSeriesDetail(by id: Int, completion: @escaping (Result<SeriesDetail, Error>) -> Void) {
-    let urlString = "https://api.themoviedb.org/3/tv/\(id)?api_key=\(apiKey)&language=pt-BR&append_to_response=videos"
+    let urlString = "https://api.themoviedb.org/3/tv/\(id)?api_key=\(apiKey)&language=pt-BR&append_to_response=videos,watch/providers"
     
     NetworkService.request(urlString: urlString) { (result: Result<SeriesDetail, Error>) in
       switch result {

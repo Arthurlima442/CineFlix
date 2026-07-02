@@ -23,6 +23,7 @@ struct SeriesDetail: Codable {
     let status: String
     let networks: [Network]
     let videos: SeriesVideosResponse?
+    let watchProviders: SeriesWatchProvidersResponse?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -39,6 +40,7 @@ struct SeriesDetail: Codable {
         case status
         case networks
         case videos
+        case watchProviders = "watch/providers"
     }
     
     struct Genre: Codable {
@@ -68,4 +70,18 @@ struct SeriesVideo: Codable {
     let name: String
     let site: String
     let type: String
+}
+
+// MARK: - Watch Providers
+
+struct SeriesWatchProvidersResponse: Codable {
+    let results: [String: SeriesWatchProviderRegion]?
+}
+
+struct SeriesWatchProviderRegion: Codable {
+    let link: String?
+    let flatrate: [WatchProvider]?
+    let rent: [WatchProvider]?
+    let buy: [WatchProvider]?
+    let ads: [WatchProvider]?
 }

@@ -16,6 +16,7 @@ class MovieDetailScreen: UIView {
         tableView.register(MovieDetailActionsCell.self, forCellReuseIdentifier: MovieDetailActionsCell.identifier)
         tableView.register(MovieDetailSynopsisCell.self, forCellReuseIdentifier: MovieDetailSynopsisCell.identifier)
         tableView.register(MovieDetailInfoCell.self, forCellReuseIdentifier: MovieDetailInfoCell.identifier)
+        tableView.register(MovieDetailWatchProvidersCell.self, forCellReuseIdentifier: MovieDetailWatchProvidersCell.identifier)
         tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         return tableView

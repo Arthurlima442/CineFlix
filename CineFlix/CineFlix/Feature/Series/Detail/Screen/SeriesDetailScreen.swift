@@ -16,6 +16,7 @@ class SeriesDetailScreen: UIView {
         tableView.register(SeriesDetailActionsCell.self, forCellReuseIdentifier: SeriesDetailActionsCell.identifier)
         tableView.register(SeriesDetailSynopsisCell.self, forCellReuseIdentifier: SeriesDetailSynopsisCell.identifier)
         tableView.register(SeriesDetailInfoCell.self, forCellReuseIdentifier: SeriesDetailInfoCell.identifier)
+        tableView.register(SeriesDetailWatchProvidersCell.self, forCellReuseIdentifier: SeriesDetailWatchProvidersCell.identifier)
         tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         return tableView

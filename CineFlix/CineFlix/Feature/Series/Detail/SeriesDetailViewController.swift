@@ -66,7 +66,7 @@ class SeriesDetailViewController: UIViewController {
 
 extension SeriesDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4 // Header + Actions + Synopsis + Info
+        return 5 // Header + Actions + Synopsis + Info + WatchProviders
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -99,6 +99,12 @@ extension SeriesDetailViewController: UITableViewDelegate, UITableViewDataSource
             cell?.configure(with: seriesDetail)
             return cell ?? UITableViewCell()
             
+        case 4:
+            // Watch Providers Cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: SeriesDetailWatchProvidersCell.identifier, for: indexPath) as? SeriesDetailWatchProvidersCell
+            cell?.configure(with: seriesDetail.watchProviders)
+            return cell ?? UITableViewCell()
+            
         default:
             return UITableViewCell()
         }
@@ -107,13 +113,15 @@ extension SeriesDetailViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return 390 // Header (backdrop + poster + info) - aumentado
+            return 390 // Header (backdrop + poster + info)
         case 1:
             return 70 // Actions buttons
         case 2:
             return 180 // Synopsis
         case 3:
             return UITableView.automaticDimension
+        case 4:
+            return UITableView.automaticDimension // Watch Providers (adaptive height)
         default:
             return UITableView.automaticDimension
         }

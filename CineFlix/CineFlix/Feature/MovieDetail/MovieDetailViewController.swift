@@ -63,7 +63,7 @@ class MovieDetailViewController: UIViewController {
 
 extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4 // Header + Actions + Synopsis + Info
+        return 5 // Header + Actions + Synopsis + Info + WatchProviders
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -96,6 +96,12 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell?.configure(with: movieDetail)
             return cell ?? UITableViewCell()
             
+        case 4:
+            // Watch Providers Cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: MovieDetailWatchProvidersCell.identifier, for: indexPath) as? MovieDetailWatchProvidersCell
+            cell?.configure(with: movieDetail.watchProviders)
+            return cell ?? UITableViewCell()
+            
         default:
             return UITableViewCell()
         }
@@ -104,13 +110,15 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return 390 // Header (backdrop + poster + info) - aumentado
+            return 390 // Header (backdrop + poster + info)
         case 1:
             return 70 // Actions buttons
         case 2:
             return 180 // Synopsis
         case 3:
             return UITableView.automaticDimension
+        case 4:
+            return UITableView.automaticDimension // Watch Providers (adaptive height)
         default:
             return UITableView.automaticDimension
         }

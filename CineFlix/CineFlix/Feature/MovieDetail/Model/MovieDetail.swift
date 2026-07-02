@@ -27,6 +27,7 @@ struct MovieDetail: Codable {
     let status: String
     let tagline: String?
     let videos: MovieVideosResponse?
+    let watchProviders: WatchProvidersResponse?
     
     enum CodingKeys: String, CodingKey {
         case id, title, overview, homepage, runtime, budget, revenue, status, tagline, videos
@@ -39,6 +40,7 @@ struct MovieDetail: Codable {
         case genres
         case adult
         case productionCompanies = "production_companies"
+        case watchProviders = "watch/providers"
     }
 }
 
@@ -66,5 +68,31 @@ struct ProductionCompany: Codable {
     enum CodingKeys: String, CodingKey {
         case id, name
         case logoPath = "logo_path"
+    }
+}
+
+// MARK: - Watch Providers
+
+struct WatchProvidersResponse: Codable {
+    let results: [String: WatchProviderRegion]?
+}
+
+struct WatchProviderRegion: Codable {
+    let link: String?
+    let flatrate: [WatchProvider]?
+    let rent: [WatchProvider]?
+    let buy: [WatchProvider]?
+    let ads: [WatchProvider]?
+}
+
+struct WatchProvider: Codable {
+    let name: String
+    let logoPath: String?
+    let displayPriority: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case name = "provider_name"
+        case logoPath = "logo_path"
+        case displayPriority = "display_priority"
     }
 }
