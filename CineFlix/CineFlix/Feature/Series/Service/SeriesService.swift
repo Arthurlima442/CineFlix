@@ -10,7 +10,7 @@ import Foundation
 
 class SeriesService {
 
-  private let apiKey = "ea1bfb9a0f4886c39967baaab322b1d8"
+  private let apiKey = "d88b4facc52e394846c3f340cfd88685"
 
   /// Busca séries populares com suporte a paginação
   /// - Parameters:

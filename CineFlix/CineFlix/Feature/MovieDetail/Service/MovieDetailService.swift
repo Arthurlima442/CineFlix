@@ -9,7 +9,7 @@ import Foundation
 
 class MovieDetailService {
     
-    private let apiKey = "ea1bfb9a0f4886c39967baaab322b1d8"
+    private let apiKey = "d88b4facc52e394846c3f340cfd88685"
     
     func fetchMovieDetail(by id: Int, completion: @escaping (Result<MovieDetail, Error>) -> Void) {
         let urlString = "https://api.themoviedb.org/3/movie/\(id)?api_key=\(apiKey)&language=pt-BR"
