@@ -22,6 +22,7 @@ struct SeriesDetail: Codable {
     let numberOfEpisodes: Int
     let status: String
     let networks: [Network]
+    let videos: SeriesVideosResponse?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -37,6 +38,7 @@ struct SeriesDetail: Codable {
         case numberOfEpisodes = "number_of_episodes"
         case status
         case networks
+        case videos
     }
     
     struct Genre: Codable {
@@ -55,4 +57,15 @@ struct SeriesDetail: Codable {
             case logoPath = "logo_path"
         }
     }
+}
+
+struct SeriesVideosResponse: Codable {
+    let results: [SeriesVideo]?
+}
+
+struct SeriesVideo: Codable {
+    let key: String
+    let name: String
+    let site: String
+    let type: String
 }

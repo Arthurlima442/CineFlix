@@ -12,8 +12,10 @@ class SeriesDetailScreen: UIView {
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(SeriesImageTableViewCell.self, forCellReuseIdentifier: SeriesImageTableViewCell.identifier)
-        tableView.register(SeriesInformationTableViewCell.self, forCellReuseIdentifier: SeriesInformationTableViewCell.identifier)
+        tableView.register(SeriesDetailHeaderCell.self, forCellReuseIdentifier: SeriesDetailHeaderCell.identifier)
+        tableView.register(SeriesDetailActionsCell.self, forCellReuseIdentifier: SeriesDetailActionsCell.identifier)
+        tableView.register(SeriesDetailSynopsisCell.self, forCellReuseIdentifier: SeriesDetailSynopsisCell.identifier)
+        tableView.register(SeriesDetailInfoCell.self, forCellReuseIdentifier: SeriesDetailInfoCell.identifier)
         tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         return tableView

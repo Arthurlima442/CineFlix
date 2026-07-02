@@ -12,8 +12,10 @@ class MovieDetailScreen: UIView {
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(MovieImageTableViewCell.self, forCellReuseIdentifier: MovieImageTableViewCell.identifier)
-        tableView.register(MovieInformationTableViewCell.self, forCellReuseIdentifier: MovieInformationTableViewCell.identifier)
+        tableView.register(MovieDetailHeaderCell.self, forCellReuseIdentifier: MovieDetailHeaderCell.identifier)
+        tableView.register(MovieDetailActionsCell.self, forCellReuseIdentifier: MovieDetailActionsCell.identifier)
+        tableView.register(MovieDetailSynopsisCell.self, forCellReuseIdentifier: MovieDetailSynopsisCell.identifier)
+        tableView.register(MovieDetailInfoCell.self, forCellReuseIdentifier: MovieDetailInfoCell.identifier)
         tableView.backgroundColor = .black
         tableView.separatorStyle = .none
         return tableView

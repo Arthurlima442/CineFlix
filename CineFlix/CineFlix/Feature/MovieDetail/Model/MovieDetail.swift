@@ -22,9 +22,14 @@ struct MovieDetail: Codable {
     let adult: Bool
     let genres: [Genre]
     let productionCompanies: [ProductionCompany]
+    let budget: Int?
+    let revenue: Int?
+    let status: String
+    let tagline: String?
+    let videos: MovieVideosResponse?
     
     enum CodingKeys: String, CodingKey {
-        case id, title, overview, homepage, runtime
+        case id, title, overview, homepage, runtime, budget, revenue, status, tagline, videos
         case originalTitle = "original_title"
         case posterPath = "poster_path"
         case backdropPath = "backdrop_path"
@@ -35,6 +40,17 @@ struct MovieDetail: Codable {
         case adult
         case productionCompanies = "production_companies"
     }
+}
+
+struct MovieVideosResponse: Codable {
+    let results: [MovieVideo]?
+}
+
+struct MovieVideo: Codable {
+    let key: String
+    let name: String
+    let site: String
+    let type: String
 }
 
 struct Genre: Codable {

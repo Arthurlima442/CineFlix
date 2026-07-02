@@ -66,21 +66,56 @@ class SeriesDetailViewController: UIViewController {
 
 extension SeriesDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfRowsInSection
+        return 4 // Header + Actions + Synopsis + Info
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: SeriesImageTableViewCell.identifier, for: indexPath) as? SeriesImageTableViewCell
-
-            guard let seriesDetail = viewModel.getSeriesDetail else { return UITableViewCell() }
-            cell?.setupCell(seriesData: seriesDetail)
+        guard let seriesDetail = viewModel.getSeriesDetail else {
+            return UITableViewCell()
+        }
+        
+        switch indexPath.row {
+        case 0:
+            // Header Cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: SeriesDetailHeaderCell.identifier, for: indexPath) as? SeriesDetailHeaderCell
+            cell?.configure(with: seriesDetail)
             return cell ?? UITableViewCell()
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: SeriesInformationTableViewCell.identifier, for: indexPath) as? SeriesInformationTableViewCell
-            guard let seriesDetail = viewModel.getSeriesDetail else { return UITableViewCell() }
-            cell?.setupCell(series: seriesDetail)
+            
+        case 1:
+            // Actions Cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: SeriesDetailActionsCell.identifier, for: indexPath) as? SeriesDetailActionsCell
+            cell?.delegate = self
             return cell ?? UITableViewCell()
+            
+        case 2:
+            // Synopsis Cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: SeriesDetailSynopsisCell.identifier, for: indexPath) as? SeriesDetailSynopsisCell
+            cell?.configure(with: seriesDetail.overview)
+            return cell ?? UITableViewCell()
+            
+        case 3:
+            // Info Cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: SeriesDetailInfoCell.identifier, for: indexPath) as? SeriesDetailInfoCell
+            cell?.configure(with: seriesDetail)
+            return cell ?? UITableViewCell()
+            
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.row {
+        case 0:
+            return 390 // Header (backdrop + poster + info) - aumentado
+        case 1:
+            return 70 // Actions buttons
+        case 2:
+            return 180 // Synopsis
+        case 3:
+            return UITableView.automaticDimension
+        default:
+            return UITableView.automaticDimension
         }
     }
 }
@@ -170,3 +205,53 @@ extension SeriesDetailViewController {
         }
     }
 }
+
+extension SeriesDetailViewController: SeriesDetailActionsCellDelegate {
+    func playButtonTapped() {
+        guard let seriesDetail = viewModel.getSeriesDetail,
+              let videos = seriesDetail.videos?.results,
+              let trailer = videos.first(where: { $0.type == "Trailer" }) ?? videos.first else {
+            showAlert(title: "Indisponível", message: "Trailer não disponível para esta série.")
+            return
+        }
+        
+        let youtubeURL = "https://www.youtube.com/watch?v=\(trailer.key)"
+        if let url = URL(string: youtubeURL) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
+    
+    func favoriteButtonTapped() {
+        print("Favorite tapped")
+    }
+    
+    func shareButtonTapped() {
+        guard let seriesDetail = viewModel.getSeriesDetail else { return }
+        
+        var shareText = "\(seriesDetail.name)\n"
+        shareText += "⭐ \(String(format: "%.1f", seriesDetail.voteAverage))/10\n"
+        shareText += "Desde \(seriesDetail.firstAirDate)\n"
+        
+        // Adiciona sinopse curta
+        let synopsisCurta = seriesDetail.overview.prefix(150)
+        shareText += "\n\(synopsisCurta)...\n"
+        
+        // Adiciona trailer se disponível
+        var shareItems: [Any] = [shareText]
+        if let videos = seriesDetail.videos?.results,
+           let trailer = videos.first(where: { $0.type == "Trailer" }) ?? videos.first,
+           let trailerURL = URL(string: "https://www.youtube.com/watch?v=\(trailer.key)") {
+            shareItems.append(trailerURL)
+        }
+        
+        let activityViewController = UIActivityViewController(activityItems: shareItems, applicationActivities: nil)
+        present(activityViewController, animated: true)
+    }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+}
+
