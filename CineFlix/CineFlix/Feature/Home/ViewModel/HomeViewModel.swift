@@ -144,10 +144,6 @@ class HomeViewModel {
             print("✅ [HomeViewModel] Section '\(section.type)' loaded: \(movieCount) movies")
             #endif
             
-            DispatchQueue.main.async {
-                self.delegate?.updateSection(at: index)
-            }
-            
         case .failure(let error):
             var section = sections[index]
             section.error = error
